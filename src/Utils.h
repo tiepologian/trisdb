@@ -8,6 +8,13 @@
 #ifndef UTILS_H
 #define	UTILS_H
 
+#include <iostream>
+#include <string>
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
+
 #define TRISDB_VERSION "0.0.1"
 
 #define STR_HELPER(x) #x
@@ -26,5 +33,12 @@
 #else
 #define TRISDB_VERSION_STR "TrisDB " TRISDB_VERSION " (DEBUG)" " (" COMPILER ")"
 #endif
+
+namespace Utils {
+    static inline std::string &rtrim(std::string &s) {
+        s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+        return s;
+    }
+}
 
 #endif	/* UTILS_H */

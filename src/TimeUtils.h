@@ -9,13 +9,15 @@
 #define	TIMEUTILS_H
 
 #include <chrono>
+#include <iostream>
+#include <iomanip>
+#include <ctime>
 
 class TimeUtils {
 public:
     TimeUtils();
     static double getCurrentTimestamp();
-private:
-
+    static std::string getTimeString();
 };
 
 #endif	/* TIMEUTILS_H */
