@@ -15,6 +15,7 @@
 void init(param_t params);
 void run();
 void test();
+void shell();
 
 Config* conf = NULL;
 TrisDb *db = NULL;
@@ -51,8 +52,8 @@ void init(param_t params) {
         params.printHelp();
         exit(0);
     } else if (params.getBoolFlag("--shell") || params.getBoolFlag("-s")) {
-        std::cout << "SHELL" << std::endl;
-        exit(0);
+        db = new TrisDb(conf);
+        shell();
     }
     // If no version, help or shell, read settings from file or use defaults and save in config var
     if (strcmp(params.getStringFlag("--config").c_str(), "noconfig") || strcmp(params.getStringFlag("-c").c_str(), "noconfig")) {
@@ -97,8 +98,7 @@ void test() {
 
     double now_3 = TimeUtils::getCurrentTimestamp();
     for (int i = 0; i < 1000000; i++) {
-        auto res = db->getFromA("Key" + std::to_string(i));
-        std::string result = std::get<0>(res);
+        Utils::ResultVector res = db->getFromA("Key" + std::to_string(i));
         if (i % 100000 == 0) {
             std::cout << std::to_string(i) << std::endl;
         }
@@ -108,22 +108,50 @@ void test() {
     double speed_2 = 1000000.0 / (tempo_2 / 1000.0);
     LogManager::getSingleton()->log(LogManager::INFO, "Reading 1,000,000 triples took " + std::to_string(tempo_2) + "ms");
     LogManager::getSingleton()->log(LogManager::INFO, "Read Speed: " + std::to_string(speed_2) + "/s");
+}
 
-    /*std::cout << "COMMAND:" << std::endl;
+void shell() {
+    LogManager::getSingleton()->log(LogManager::INFO, TRISDB_VERSION_STR);
+    LogManager::getSingleton()->log(LogManager::INFO, "Shell ready");
     while (true) {
+        std::cout << "> ";
         std::string input;
         std::getline(std::cin, input);
         unsigned pos = input.find(" ");
         if (input.substr(0, pos) == "GETA") {
             // get by name
-            auto res = mappa.getA(input.substr(pos + 1));
-            if (std::get<0>(res) == "") std::cout << "NOT FOUND" << std::endl;
-            else std::cout << std::get<0>(res) << " " << std::get<1>(res) << " - " << std::get<2>(res) << std::endl;
+            Utils::ResultVector res = db->getFromA(input.substr(pos + 1));
+            if (res.empty()) std::cout << "NOT FOUND" << std::endl;
+            else {
+                for (Utils::ResultVector::iterator it = res.begin(); it < res.end(); it++) {
+                    std::cout << std::get<0>(*it) << " " << std::get<1>(*it) << " " << std::get<2>(*it) << std::endl;
+                }
+            }
         } else if (input.substr(0, pos) == "GETB") {
             // get by surname
-            auto res2 = mappa.getB(input.substr(pos + 1));
-            if (std::get<0>(res2) == "") std::cout << "NOT FOUND" << std::endl;
-            else std::cout << std::get<0>(res2) << " " << std::get<1>(res2) << " - " << std::get<2>(res2) << std::endl;
+            Utils::ResultVector res = db->getFromB(input.substr(pos + 1));
+            if (res.empty()) std::cout << "NOT FOUND" << std::endl;
+            else {
+                for (Utils::ResultVector::iterator it = res.begin(); it < res.end(); it++) {
+                    std::cout << std::get<0>(*it) << " " << std::get<1>(*it) << " " << std::get<2>(*it) << std::endl;
+                }
+            }
+        } else if (input.substr(0, pos) == "GETC") {
+            // get by surname
+            Utils::ResultVector res = db->getFromC(atoi(input.substr(pos + 1).c_str()));
+            if (res.empty()) std::cout << "NOT FOUND" << std::endl;
+            else {
+                for (Utils::ResultVector::iterator it = res.begin(); it < res.end(); it++) {
+                    std::cout << std::get<0>(*it) << " " << std::get<1>(*it) << " " << std::get<2>(*it) << std::endl;
+                }
+            }
+        } else if (input.substr(0, pos) == "CREATE") {
+            std::vector<std::string> v;
+            Utils::split(input, v);
+            db->create(v.at(1), v.at(2), atoi(v.at(3).c_str()));
+        } else if (input.substr(0, pos) == "QUIT") {
+            delete db;
+            exit(0);
         }
-    }*/
+    }
 }

@@ -17,10 +17,14 @@ void TrisDb::create(std::string a, std::string b, int c) {
     dbData.add(a, b, c);
 }
 
-std::tuple<std::string, std::string, int> TrisDb::getFromA(std::string a) {
+Utils::ResultVector TrisDb::getFromA(std::string a) {
     return dbData.getA(a);
 }
 
-std::tuple<std::string, std::string, int> TrisDb::getFromB(std::string b) {
+Utils::ResultVector TrisDb::getFromB(std::string b) {
     return dbData.getB(b);
+}
+
+Utils::ResultVector TrisDb::getFromC(int c) {
+    return dbData.getC(c);
 }

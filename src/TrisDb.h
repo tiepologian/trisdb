@@ -16,8 +16,9 @@ public:
     TrisDb(Config* config);
     virtual ~TrisDb();
     void create(std::string a, std::string b, int c);
-    std::tuple<std::string, std::string, int> getFromA(std::string a);
-    std::tuple<std::string, std::string, int> getFromB(std::string b);
+    Utils::ResultVector getFromA(std::string a);
+    Utils::ResultVector getFromB(std::string b);
+    Utils::ResultVector getFromC(int c);
 private:
     TripleMap<std::string, std::string, int> dbData;
 };
