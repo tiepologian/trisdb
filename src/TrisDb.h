@@ -15,12 +15,12 @@ class TrisDb {
 public:
     TrisDb(Config* config);
     virtual ~TrisDb();
-    void create(std::string a, std::string b, int c);
+    void create(std::string a, std::string b, std::string c);
     Utils::ResultVector getFromA(std::string a);
     Utils::ResultVector getFromB(std::string b);
-    Utils::ResultVector getFromC(int c);
+    Utils::ResultVector getFromC(std::string c);
 private:
-    TripleMap<std::string, std::string, int> dbData;
+    TripleMap<std::string, std::string, std::string> dbData;
 };
 
 #endif	/* TRISDB_H */

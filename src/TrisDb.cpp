@@ -13,7 +13,7 @@ TrisDb::TrisDb(Config* config) {
 TrisDb::~TrisDb() {
 }
 
-void TrisDb::create(std::string a, std::string b, int c) {
+void TrisDb::create(std::string a, std::string b, std::string c) {
     dbData.add(a, b, c);
 }
 
@@ -25,6 +25,6 @@ Utils::ResultVector TrisDb::getFromB(std::string b) {
     return dbData.getB(b);
 }
 
-Utils::ResultVector TrisDb::getFromC(int c) {
+Utils::ResultVector TrisDb::getFromC(std::string c) {
     return dbData.getC(c);
 }

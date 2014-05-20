@@ -85,7 +85,7 @@ void test() {
     LogManager::getSingleton()->log(LogManager::INFO, "Starting performance tests");
     double now_1 = TimeUtils::getCurrentTimestamp();
     for (int i = 0; i < 1000000; i++) {
-        db->create("Key" + std::to_string(i), "Chiave" + std::to_string(i), i);
+        db->create("Key" + std::to_string(i), "Chiave" + std::to_string(i), Utils::toString(i));
         if (i % 100000 == 0) {
             std::cout << std::to_string(i) << std::endl;
         }
@@ -138,7 +138,7 @@ void shell() {
             }
         } else if (input.substr(0, pos) == "GETC") {
             // get by surname
-            Utils::ResultVector res = db->getFromC(atoi(input.substr(pos + 1).c_str()));
+            Utils::ResultVector res = db->getFromC(input.substr(pos + 1));
             if (res.empty()) std::cout << "NOT FOUND" << std::endl;
             else {
                 for (Utils::ResultVector::iterator it = res.begin(); it < res.end(); it++) {
@@ -148,7 +148,7 @@ void shell() {
         } else if (input.substr(0, pos) == "CREATE") {
             std::vector<std::string> v;
             Utils::split(input, v);
-            db->create(v.at(1), v.at(2), atoi(v.at(3).c_str()));
+            db->create(v.at(1), v.at(2), v.at(3));
         } else if (input.substr(0, pos) == "QUIT") {
             delete db;
             exit(0);

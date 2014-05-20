@@ -18,6 +18,7 @@
 #include <iomanip>
 #include <iterator>
 #include <sstream>
+#include <boost/lexical_cast.hpp>
 
 #define TRISDB_VERSION "0.0.1"
 
@@ -39,7 +40,12 @@
 #endif
 
 namespace Utils {
-    typedef std::vector<std::tuple<std::string, std::string, int>> ResultVector;
+    typedef std::vector<std::tuple<std::string, std::string, std::string>> ResultVector;
+    
+    template<typename T>
+    std::string toString(T t) {
+        return boost::lexical_cast<std::string>(t);
+    }
 
     static inline std::string &rtrim(std::string &s) {
         s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
