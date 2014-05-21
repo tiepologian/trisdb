@@ -17,8 +17,8 @@ void run();
 void test();
 void shell();
 
-Config* conf = NULL;
-TrisDb *db = NULL;
+Config* conf = nullptr;
+TrisDb *db = nullptr;
 
 int main(int argc, char *argv[]) {
     param_t params;
@@ -37,10 +37,12 @@ int main(int argc, char *argv[]) {
         // init saves settings in config, now call run() passing settings)
         // If server starts, start TCP server
         run();
-    } catch (...) {
-        LogManager::getSingleton()->log(LogManager::ERROR, "Error parsing arguments");
+    } catch (std::exception& e) {
+        LogManager::getSingleton()->log(LogManager::ERROR, e.what());
         return 1;
     }
+
+    // TODO: Remember to delete!    
     return 0;
 }
 
@@ -117,7 +119,16 @@ void shell() {
         std::cout << "> ";
         std::string input;
         std::getline(std::cin, input);
-        unsigned pos = input.find(" ");
+        try {
+            if (input != "") {
+                QueryParser::Query q = db->getParser()->parse(input);
+                std::cout << q << std::endl;
+            }
+        } catch (Utils::CustomException& e) {
+            LogManager::getSingleton()->log(LogManager::ERROR, e.what());
+        }
+
+        /*unsigned pos = input.find(" ");
         if (input.substr(0, pos) == "GETA") {
             // get by name
             Utils::ResultVector res = db->getFromA(input.substr(pos + 1));
@@ -152,6 +163,9 @@ void shell() {
         } else if (input.substr(0, pos) == "QUIT") {
             delete db;
             exit(0);
-        }
+        } else if (input.substr(0, pos) == "GET") {
+            QueryParser::Query q = db->getParser()->parse(input);
+            std::cout << q << std::endl;
+        }*/
     }
 }

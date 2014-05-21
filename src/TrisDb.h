@@ -10,6 +10,7 @@
 
 #include "TripleMap.h"
 #include "Config.h"
+#include "QueryParser.h"
 
 class TrisDb {
 public:
@@ -19,8 +20,10 @@ public:
     Utils::ResultVector getFromA(std::string a);
     Utils::ResultVector getFromB(std::string b);
     Utils::ResultVector getFromC(std::string c);
+    QueryParser* getParser();
 private:
     TripleMap<std::string, std::string, std::string> dbData;
+    QueryParser* _parser;
 };
 
 #endif	/* TRISDB_H */

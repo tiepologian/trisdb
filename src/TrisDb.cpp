@@ -8,6 +8,7 @@
 #include "TrisDb.h"
 
 TrisDb::TrisDb(Config* config) {
+    this->_parser = new QueryParser();
 }
 
 TrisDb::~TrisDb() {
@@ -27,4 +28,8 @@ Utils::ResultVector TrisDb::getFromB(std::string b) {
 
 Utils::ResultVector TrisDb::getFromC(std::string c) {
     return dbData.getC(c);
+}
+
+QueryParser* TrisDb::getParser() {
+    return _parser;
 }

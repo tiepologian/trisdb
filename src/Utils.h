@@ -18,7 +18,9 @@
 #include <iomanip>
 #include <iterator>
 #include <sstream>
+#include <exception>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
 
 #define TRISDB_VERSION "0.0.1"
 
@@ -41,6 +43,7 @@
 
 namespace Utils {
     typedef std::vector<std::tuple<std::string, std::string, std::string>> ResultVector;
+    static const std::string kQueryWildcard = "***";
     
     template<typename T>
     std::string toString(T t) {
@@ -67,6 +70,13 @@ namespace Utils {
             ss >> ws_delim;
         }
     }
+    
+    class CustomException : std::exception {
+    public:
+        virtual const char* what() const throw() {
+            return "Parameters error!";
+        }
+    };
 }
 
 #endif	/* UTILS_H */
