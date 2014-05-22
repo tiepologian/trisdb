@@ -24,25 +24,22 @@ QueryParser::Query QueryParser::parse(std::string s) {
     q.timestamp = TimeUtils::getCurrentTimestamp();
     unsigned pos = s.find(" ");
     q.command = boost::to_upper_copy(s.substr(0, pos));
-       
-    boost::char_separator<char> sep("\"", "\"");
-    boost::tokenizer<boost::char_separator<char> > tokens(s.substr(pos+1), sep);   
-    
+
+    if (q.command == "QUIT") return q;
+
     std::vector<std::string>params;
-    for (tokenizer::iterator tok_iter = tokens.begin();
-            tok_iter != tokens.end(); ++tok_iter) {
-        if (*tok_iter != " ") {
-            if(*tok_iter == "*") {
-                params.push_back(*tok_iter);
-            }
-            else {
-                params.push_back(*tok_iter);
-            }
+
+    Tokenizer tok(s.substr(pos + 1), "\"");
+    while (tok.NextToken()) {
+        if (tok.GetToken() != " ") {
+            if(tok.GetToken() == "*") params.push_back(Utils::kQueryWildcard);
+            else params.push_back(tok.GetToken());
         }
     }
+
     // are there enough argsuments..?
     Utils::CustomException ex;
-    if(params.size() < 3) throw ex;
+    if (params.size() < 3) throw ex;
     q.parameters = std::make_tuple(params.at(0), params.at(1), params.at(2));
     return q;
 }

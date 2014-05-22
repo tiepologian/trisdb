@@ -10,22 +10,17 @@
 
 #include "Utils.h"
 #include "TimeUtils.h"
-#include <boost/tokenizer.hpp>
-
-using boost::tokenizer;
-using boost::escaped_list_separator;
+#include "Tokenizer.h"
 
 class QueryParser {
 public:
     QueryParser();
     QueryParser(const QueryParser& orig);
     virtual ~QueryParser();
-    typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-    typedef std::tuple<std::string, std::string, std::string> record;
     struct Query {
         double timestamp;
         std::string command;
-        record parameters;
+        Utils::record parameters;
     };
     // Receives string command, parses it and returns Query object
     Query parse(std::string s);

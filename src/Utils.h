@@ -42,9 +42,10 @@
 #endif
 
 namespace Utils {
-    typedef std::vector<std::tuple<std::string, std::string, std::string>> ResultVector;
+    typedef std::tuple<std::string, std::string, std::string> record;
+    typedef std::vector<record> ResultVector;
     static const std::string kQueryWildcard = "***";
-    
+
     template<typename T>
     std::string toString(T t) {
         return boost::lexical_cast<std::string>(t);
@@ -70,10 +71,11 @@ namespace Utils {
             ss >> ws_delim;
         }
     }
-    
+
     class CustomException : std::exception {
     public:
-        virtual const char* what() const throw() {
+
+        virtual const char* what() const throw () {
             return "Parameters error!";
         }
     };

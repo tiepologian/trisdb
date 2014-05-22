@@ -122,50 +122,19 @@ void shell() {
         try {
             if (input != "") {
                 QueryParser::Query q = db->getParser()->parse(input);
-                std::cout << q << std::endl;
+                //std::cout << q << std::endl;
+                Utils::ResultVector r = db->getPlanner()->execute(q);
+                for (Utils::ResultVector::iterator it = r.begin(); it != r.end(); ++it) {
+                    if(q.command == "GETS") std::cout << std::get<0>(*it) << std::endl;
+                    else if(q.command == "GETP") std::cout << std::get<1>(*it) << std::endl;
+                    else if(q.command == "GETO") std::cout << std::get<2>(*it) << std::endl;
+                    else std::cout << std::get<0>(*it) << "-" << std::get<1>(*it) << "-" << std::get<2>(*it) << std::endl;
+                }
+                double now = TimeUtils::getCurrentTimestamp();
+                std::cout << "Query executed in " << now - q.timestamp << "ms" << std::endl << std::endl;
             }
         } catch (Utils::CustomException& e) {
             LogManager::getSingleton()->log(LogManager::ERROR, e.what());
         }
-
-        /*unsigned pos = input.find(" ");
-        if (input.substr(0, pos) == "GETA") {
-            // get by name
-            Utils::ResultVector res = db->getFromA(input.substr(pos + 1));
-            if (res.empty()) std::cout << "NOT FOUND" << std::endl;
-            else {
-                for (Utils::ResultVector::iterator it = res.begin(); it < res.end(); it++) {
-                    std::cout << std::get<0>(*it) << " " << std::get<1>(*it) << " " << std::get<2>(*it) << std::endl;
-                }
-            }
-        } else if (input.substr(0, pos) == "GETB") {
-            // get by surname
-            Utils::ResultVector res = db->getFromB(input.substr(pos + 1));
-            if (res.empty()) std::cout << "NOT FOUND" << std::endl;
-            else {
-                for (Utils::ResultVector::iterator it = res.begin(); it < res.end(); it++) {
-                    std::cout << std::get<0>(*it) << " " << std::get<1>(*it) << " " << std::get<2>(*it) << std::endl;
-                }
-            }
-        } else if (input.substr(0, pos) == "GETC") {
-            // get by surname
-            Utils::ResultVector res = db->getFromC(input.substr(pos + 1));
-            if (res.empty()) std::cout << "NOT FOUND" << std::endl;
-            else {
-                for (Utils::ResultVector::iterator it = res.begin(); it < res.end(); it++) {
-                    std::cout << std::get<0>(*it) << " " << std::get<1>(*it) << " " << std::get<2>(*it) << std::endl;
-                }
-            }
-        } else if (input.substr(0, pos) == "CREATE") {
-            std::vector<std::string> v;
-            Utils::split(input, v);
-            db->create(v.at(1), v.at(2), v.at(3));
-        } else if (input.substr(0, pos) == "QUIT") {
-            delete db;
-            exit(0);
-        } else if (input.substr(0, pos) == "GET") {
-            QueryParser::Query q = db->getParser()->parse(input);
-            std::cout << q << std::endl;
-        }*/
     }
 }

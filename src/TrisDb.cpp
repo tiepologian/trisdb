@@ -9,6 +9,7 @@
 
 TrisDb::TrisDb(Config* config) {
     this->_parser = new QueryParser();
+    this->_planner = new QueryPlanner(this);
 }
 
 TrisDb::~TrisDb() {
@@ -30,6 +31,21 @@ Utils::ResultVector TrisDb::getFromC(std::string c) {
     return dbData.getC(c);
 }
 
+Utils::ResultVector TrisDb::get(int index, std::string c) {
+    switch(index){
+        case 0:
+            return getFromA(c);
+        case 1:
+            return getFromB(c);
+        case 2:
+            return getFromC(c);
+    }        
+}
+
 QueryParser* TrisDb::getParser() {
     return _parser;
+}
+
+QueryPlanner* TrisDb::getPlanner() {
+    return _planner;
 }

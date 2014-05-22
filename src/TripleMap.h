@@ -12,10 +12,12 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include <set>
+#include "Utils.h"
 
 template <typename T1, typename T2, typename T3>
 class TripleMap {
-    typedef std::vector<std::tuple<T1, T2, T3>> ResultVector;
+    //typedef std::set<std::tuple<T1, T2, T3>> ResultVector;
 public:
 
     void add(T1 t1, T2 t2, T3 t3) {
@@ -24,8 +26,8 @@ public:
         m3.insert(std::pair<T3, std::tuple<T1, T2, T3 >> (t3, std::make_tuple(t1, t2, t3)));
     }
 
-    ResultVector getA(T1 t1) {
-        ResultVector result;
+    Utils::ResultVector getA(T1 t1) {
+        Utils::ResultVector result;
         auto range = m1.equal_range(t1);
         for (auto it = range.first; it != range.second; ++it) {
             result.push_back((*it).second);
@@ -33,8 +35,8 @@ public:
         return result;
     }
 
-    ResultVector getB(T2 t2) {
-        ResultVector result;
+    Utils::ResultVector getB(T2 t2) {
+        Utils::ResultVector result;
         auto range = m2.equal_range(t2);
         for (auto it = range.first; it != range.second; ++it) {
             result.push_back((*it).second);
@@ -42,8 +44,8 @@ public:
         return result;
     }
 
-    ResultVector getC(T3 t3) {
-        ResultVector result;
+    Utils::ResultVector getC(T3 t3) {
+        Utils::ResultVector result;
         auto range = m3.equal_range(t3);
         for (auto it = range.first; it != range.second; ++it) {
             result.push_back((*it).second);
