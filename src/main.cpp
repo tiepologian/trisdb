@@ -11,6 +11,7 @@
 #include "TrisDb.h"
 #include "LogManager.h"
 #include "param_t.h"
+#include "table_printer.h"
 
 #ifdef __linux__
 #include <readline/readline.h>
@@ -118,25 +119,38 @@ void test() {
 void shell() {
     LogManager::getSingleton()->log(LogManager::INFO, TRISDB_VERSION_STR);
     LogManager::getSingleton()->log(LogManager::INFO, "Shell ready");
+    std::cout << std::endl;
 #ifdef __linux__
-    LogManager::getSingleton()->log(LogManager::INFO, "You're on Linux!");
     char *buf;
     rl_bind_key('\t', rl_abort); //disable auto-complete
-    while ((buf = readline(">> ")) != NULL) {      
-        std::string input(buf);        
+    while ((buf = readline(">> ")) != NULL) {
+        std::string input(buf);
         try {
             if (input != "") {
                 QueryParser::Query q = db->getParser()->parse(input);
                 //std::cout << q << std::endl;
                 Utils::ResultVector r = db->getPlanner()->execute(q);
-                for (Utils::ResultVector::iterator it = r.begin(); it != r.end(); ++it) {
-                    if (q.command == "GETS") std::cout << std::get<0>(*it) << std::endl;
-                    else if (q.command == "GETP") std::cout << std::get<1>(*it) << std::endl;
-                    else if (q.command == "GETO") std::cout << std::get<2>(*it) << std::endl;
-                    else std::cout << std::get<0>(*it) << "-" << std::get<1>(*it) << "-" << std::get<2>(*it) << std::endl;
+                std::cout << std::endl;
+                bprinter::TablePrinter tp(&std::cout);
+                if (q.command == "GETS") tp.AddColumn("Subject", 20);
+                else if (q.command == "GETP") tp.AddColumn("Predicate", 20);
+                else if (q.command == "GETO") tp.AddColumn("Object", 20);
+                else if (q.command == "GET") {
+                    tp.AddColumn("Subject", 20);
+                    tp.AddColumn("Predicate", 20);
+                    tp.AddColumn("Object", 20);
                 }
+                if (q.command.substr(0, 2) == "GE") tp.PrintHeader();
+                for (Utils::ResultVector::iterator it = r.begin(); it != r.end(); ++it) {
+                    if (q.command == "GETS") tp << std::get<0>(*it);
+                    else if (q.command == "GETP") tp << std::get<1>(*it);
+                    else if (q.command == "GETO") tp << std::get<2>(*it);
+                    else if (q.command == "GET") tp << std::get<0>(*it) << std::get<1>(*it) << std::get<2>(*it);
+                }
+                if (q.command.substr(0, 2) == "GE") tp.PrintFooter();
                 double now = TimeUtils::getCurrentTimestamp();
-                std::cout << "Query executed in " << now - q.timestamp << "ms" << std::endl << std::endl;
+                if (q.command.substr(0, 2) == "GE") std::cout << "\nRead " << r.size() << " rows in " << now - q.timestamp << "ms" << std::endl << std::endl;
+                else std::cout << "Query executed in " << now - q.timestamp << "ms" << std::endl << std::endl;
             }
         } catch (Utils::CustomException& e) {
             LogManager::getSingleton()->log(LogManager::ERROR, e.what());
@@ -156,14 +170,27 @@ void shell() {
                 QueryParser::Query q = db->getParser()->parse(input);
                 //std::cout << q << std::endl;
                 Utils::ResultVector r = db->getPlanner()->execute(q);
-                for (Utils::ResultVector::iterator it = r.begin(); it != r.end(); ++it) {
-                    if (q.command == "GETS") std::cout << std::get<0>(*it) << std::endl;
-                    else if (q.command == "GETP") std::cout << std::get<1>(*it) << std::endl;
-                    else if (q.command == "GETO") std::cout << std::get<2>(*it) << std::endl;
-                    else std::cout << std::get<0>(*it) << "-" << std::get<1>(*it) << "-" << std::get<2>(*it) << std::endl;
+                std::cout << std::endl;
+                bprinter::TablePrinter tp(&std::cout);
+                if (q.command == "GETS") tp.AddColumn("Subject", 20);
+                else if (q.command == "GETP") tp.AddColumn("Predicate", 20);
+                else if (q.command == "GETO") tp.AddColumn("Object", 20);
+                else if (q.command == "GET") {
+                    tp.AddColumn("Subject", 20);
+                    tp.AddColumn("Predicate", 20);
+                    tp.AddColumn("Object", 20);
                 }
+                if (q.command.substr(0, 2) == "GE") tp.PrintHeader();
+                for (Utils::ResultVector::iterator it = r.begin(); it != r.end(); ++it) {
+                    if (q.command == "GETS") tp << std::get<0>(*it);
+                    else if (q.command == "GETP") tp << std::get<1>(*it);
+                    else if (q.command == "GETO") tp << std::get<2>(*it);
+                    else if (q.command == "GET") tp << std::get<0>(*it) << std::get<1>(*it) << std::get<2>(*it);
+                }
+                if (q.command.substr(0, 2) == "GE") tp.PrintFooter();
                 double now = TimeUtils::getCurrentTimestamp();
-                std::cout << "Query executed in " << now - q.timestamp << "ms" << std::endl << std::endl;
+                if (q.command.substr(0, 2) == "GE") std::cout << "\nRead " << r.size() << " rows in " << now - q.timestamp << "ms" << std::endl << std::endl;
+                else std::cout << "Query executed in " << now - q.timestamp << "ms" << std::endl << std::endl;
             }
         } catch (Utils::CustomException& e) {
             LogManager::getSingleton()->log(LogManager::ERROR, e.what());

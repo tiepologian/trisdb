@@ -19,6 +19,10 @@ void TrisDb::create(std::string a, std::string b, std::string c) {
     dbData.add(a, b, c);
 }
 
+bool TrisDb::remove(std::string a, std::string b, std::string c) {
+    return dbData.remove(a, b, c);
+}
+
 Utils::ResultVector TrisDb::getFromA(std::string a) {
     return dbData.getA(a);
 }
@@ -40,6 +44,14 @@ Utils::ResultVector TrisDb::get(int index, std::string c) {
         case 2:
             return getFromC(c);
     }        
+}
+
+Utils::ResultVector TrisDb::getAll() {
+    return dbData.getAll();
+}
+
+void TrisDb::clearAll() {
+    dbData.clearAll();
 }
 
 QueryParser* TrisDb::getParser() {

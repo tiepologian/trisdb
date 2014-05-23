@@ -17,10 +17,13 @@ public:
     TrisDb(Config* config);
     virtual ~TrisDb();
     void create(std::string a, std::string b, std::string c);
+    bool remove(std::string a, std::string b, std::string c);
     Utils::ResultVector getFromA(std::string a);
     Utils::ResultVector getFromB(std::string b);
     Utils::ResultVector getFromC(std::string c);
     Utils::ResultVector get(int index, std::string c);
+    Utils::ResultVector getAll();
+    void clearAll();
     QueryParser* getParser();
     QueryPlanner* getPlanner();
 private:

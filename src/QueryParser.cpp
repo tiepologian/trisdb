@@ -25,7 +25,7 @@ QueryParser::Query QueryParser::parse(std::string s) {
     unsigned pos = s.find(" ");
     q.command = boost::to_upper_copy(s.substr(0, pos));
 
-    if (q.command == "QUIT") return q;
+    if (q.command == "QUIT" || q.command == "CLEAR") return q;
 
     std::vector<std::string>params;
 

@@ -26,27 +26,38 @@ Utils::ResultVector QueryPlanner::execute(QueryParser::Query q) {
         this->_parent->create(std::get<0>(q.parameters), std::get<1>(q.parameters), std::get<2>(q.parameters));
     } else if (q.command == "GET" || q.command == "GETS" || q.command == "GETP" || q.command == "GETO") {
         std::deque<int> plan = getQueryPlan(q);
-        
+
         //std::cout << "PARAMS:" << std::endl;
         //std::cout << std::get<0>(q.parameters) << "-" << std::get<1>(q.parameters) << "-" << std::get<2>(q.parameters) << std::endl;
-        
+
         //std::cout << "QUERY PLAN:" << std::endl;
         //for (auto i : plan) std::cout << i << std::endl;
-        
+
         std::string args[3];
         std::tie(args[0], args[1], args[2]) = q.parameters;
-        
+
+        // Are there 3 wildcards? Return everything
+        if (args[plan[0]] == Utils::kQueryWildcard) return this->_parent->getAll();
+
         Utils::ResultVector tmp1 = this->_parent->get(plan[0], args[plan[0]]);
         //std::cout << "Checking " << plan[0] << " for value " << args[plan[0]] << std::endl;
         //std::cout << "TMP:" << std::endl;
         for (Utils::ResultVector::iterator it = tmp1.begin(); it != tmp1.end(); ++it) {
             //std::cout << std::get<0>(*it) << "-" << std::get<1>(*it) << "-" << std::get<2>(*it) << std::endl;
-            if(isEqual(std::get<0>(*it), std::get<0>(q.parameters)) && isEqual(std::get<1>(*it), std::get<1>(q.parameters)) && isEqual(std::get<2>(*it), std::get<2>(q.parameters))) {
+            if (isEqual(std::get<0>(*it), std::get<0>(q.parameters)) && isEqual(std::get<1>(*it), std::get<1>(q.parameters)) && isEqual(std::get<2>(*it), std::get<2>(q.parameters))) {
                 result.push_back(*it);
-            }           
+            }
         }
-    } else if(q.command == "QUIT") {
+    } else if (q.command == "DELETE") {
+        // get query plan, which index shall we query?
+        std::deque<int> plan = getQueryPlan(q);
+        std::string args[3];
+        std::tie(args[0], args[1], args[2]) = q.parameters;
+        this->_parent->remove(args[0], args[1], args[2]);
+    } else if (q.command == "QUIT") {
         exit(0);
+    } else if (q.command == "CLEAR") {
+        this->_parent->clearAll();
     }
     return result;
 }
@@ -77,6 +88,6 @@ Utils::ResultVector QueryPlanner::getIntersection(Utils::ResultVector &a, Utils:
 }
 
 bool QueryPlanner::isEqual(std::string s1, std::string s2) {
-    if((s2 == Utils::kQueryWildcard) || (s1 == s2)) return true;
+    if ((s2 == Utils::kQueryWildcard) || (s1 == s2)) return true;
     else return false;
 }
