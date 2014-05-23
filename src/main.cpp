@@ -12,6 +12,11 @@
 #include "LogManager.h"
 #include "param_t.h"
 
+#ifdef __linux__
+#include <readline/readline.h>
+#include <readline/history.h>
+#endif
+
 void init(param_t params);
 void run();
 void test();
@@ -76,8 +81,6 @@ void run() {
     db = new TrisDb(conf);
     test();
 
-    //db->create("Gianluca", "Tiepolo", 22);
-    //db->create("Adele", "Gugliotta", 23);
     //LogManager::getSingleton()->log(LogManager::INFO, std::get<1>(db->getFromA("Gianluca")));
     // TcpServer *tcp = new TcpServer(db);
     // UnixSocket *ux = new UnixSocket(db);
@@ -115,6 +118,35 @@ void test() {
 void shell() {
     LogManager::getSingleton()->log(LogManager::INFO, TRISDB_VERSION_STR);
     LogManager::getSingleton()->log(LogManager::INFO, "Shell ready");
+#ifdef __linux__
+    LogManager::getSingleton()->log(LogManager::INFO, "You're on Linux!");
+    char *buf;
+    rl_bind_key('\t', rl_abort); //disable auto-complete
+    while ((buf = readline(">> ")) != NULL) {      
+        std::string input(buf);        
+        try {
+            if (input != "") {
+                QueryParser::Query q = db->getParser()->parse(input);
+                //std::cout << q << std::endl;
+                Utils::ResultVector r = db->getPlanner()->execute(q);
+                for (Utils::ResultVector::iterator it = r.begin(); it != r.end(); ++it) {
+                    if (q.command == "GETS") std::cout << std::get<0>(*it) << std::endl;
+                    else if (q.command == "GETP") std::cout << std::get<1>(*it) << std::endl;
+                    else if (q.command == "GETO") std::cout << std::get<2>(*it) << std::endl;
+                    else std::cout << std::get<0>(*it) << "-" << std::get<1>(*it) << "-" << std::get<2>(*it) << std::endl;
+                }
+                double now = TimeUtils::getCurrentTimestamp();
+                std::cout << "Query executed in " << now - q.timestamp << "ms" << std::endl << std::endl;
+            }
+        } catch (Utils::CustomException& e) {
+            LogManager::getSingleton()->log(LogManager::ERROR, e.what());
+        }
+
+        if (buf[0] != 0)
+            add_history(buf);
+    }
+    free(buf);
+#else   
     while (true) {
         std::cout << "> ";
         std::string input;
@@ -125,9 +157,9 @@ void shell() {
                 //std::cout << q << std::endl;
                 Utils::ResultVector r = db->getPlanner()->execute(q);
                 for (Utils::ResultVector::iterator it = r.begin(); it != r.end(); ++it) {
-                    if(q.command == "GETS") std::cout << std::get<0>(*it) << std::endl;
-                    else if(q.command == "GETP") std::cout << std::get<1>(*it) << std::endl;
-                    else if(q.command == "GETO") std::cout << std::get<2>(*it) << std::endl;
+                    if (q.command == "GETS") std::cout << std::get<0>(*it) << std::endl;
+                    else if (q.command == "GETP") std::cout << std::get<1>(*it) << std::endl;
+                    else if (q.command == "GETO") std::cout << std::get<2>(*it) << std::endl;
                     else std::cout << std::get<0>(*it) << "-" << std::get<1>(*it) << "-" << std::get<2>(*it) << std::endl;
                 }
                 double now = TimeUtils::getCurrentTimestamp();
@@ -137,4 +169,5 @@ void shell() {
             LogManager::getSingleton()->log(LogManager::ERROR, e.what());
         }
     }
+#endif
 }

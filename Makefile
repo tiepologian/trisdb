@@ -6,7 +6,7 @@ OBJS=$(subst .cc,.o,$(SRCS))
 CPPFLAGS=-std=c++11 -O3
 
 all:
-	g++ $(CPPFLAGS) $(SRCS) -o dist/trisdb
+	g++ $(CPPFLAGS) $(SRCS) -o dist/trisdb -lreadline
 
 clean:
 	$(RM) dist/trisdb
