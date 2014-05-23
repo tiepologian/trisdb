@@ -32,7 +32,6 @@ public:
             auto range = m1.equal_range(t1);
             for (auto it = range.first; it != range.second;) {
                 if (isEqual(std::get<1>((*it).second), t2) && isEqual(std::get<2>((*it).second), t3)) {
-                    //std::cout << "DELETING: " << std::get<0>((*it).second) << "-" << std::get<1>((*it).second) << "-" << std::get<2>((*it).second) << std::endl;
                     removeFromB(std::get<0>((*it).second), std::get<1>((*it).second), std::get<2>((*it).second));
                     removeFromC(std::get<0>((*it).second), std::get<1>((*it).second), std::get<2>((*it).second));
                     m1.erase(it++);
@@ -44,7 +43,6 @@ public:
             auto range = m2.equal_range(t2);
             for (auto it = range.first; it != range.second;) {
                 if (isEqual(std::get<0>((*it).second), t1) && isEqual(std::get<2>((*it).second), t3)) {
-                    //std::cout << "DELETING: " << std::get<0>((*it).second) << "-" << std::get<1>((*it).second) << "-" << std::get<2>((*it).second) << std::endl;
                     removeFromA(std::get<0>((*it).second), std::get<1>((*it).second), std::get<2>((*it).second));
                     removeFromC(std::get<0>((*it).second), std::get<1>((*it).second), std::get<2>((*it).second));
                     m2.erase(it++);
@@ -56,7 +54,6 @@ public:
             auto range = m3.equal_range(t3);
             for (auto it = range.first; it != range.second;) {
                 if (isEqual(std::get<1>((*it).second), t2) && isEqual(std::get<0>((*it).second), t1)) {
-                    //std::cout << "DELETING: " << std::get<0>((*it).second) << "-" << std::get<1>((*it).second) << "-" << std::get<2>((*it).second) << std::endl;
                     removeFromB(std::get<0>((*it).second), std::get<1>((*it).second), std::get<2>((*it).second));
                     removeFromA(std::get<0>((*it).second), std::get<1>((*it).second), std::get<2>((*it).second));
                     m3.erase(it++);
@@ -124,7 +121,6 @@ private:
         auto range = m1.equal_range(s1);
         for (auto it = range.first; it != range.second;) {
             if (isEqual(std::get<1>((*it).second), s2) && isEqual(std::get<2>((*it).second), s3)) {
-                //std::cout << "DELETING: " << std::get<0>((*it).second) << "-" << std::get<1>((*it).second) << "-" << std::get<2>((*it).second) << std::endl;
                 m1.erase(it++);
             }
             else ++it;
@@ -136,7 +132,6 @@ private:
         auto range = m2.equal_range(s2);
         for (auto it = range.first; it != range.second;) {
             if (isEqual(std::get<0>((*it).second), s1) && isEqual(std::get<2>((*it).second), s3)) {
-                //std::cout << "DELETING: " << std::get<0>((*it).second) << "-" << std::get<1>((*it).second) << "-" << std::get<2>((*it).second) << std::endl;
                 m2.erase(it++);
             }
             else ++it;
@@ -148,7 +143,6 @@ private:
         auto range = m3.equal_range(s3);
         for (auto it = range.first; it != range.second;) {
             if (isEqual(std::get<0>((*it).second), s1) && isEqual(std::get<1>((*it).second), s2)) {
-                //std::cout << "DELETING: " << std::get<0>((*it).second) << "-" << std::get<1>((*it).second) << "-" << std::get<2>((*it).second) << std::endl;
                 m3.erase(it++);
             }
             else ++it;

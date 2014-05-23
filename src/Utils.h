@@ -19,6 +19,7 @@
 #include <iterator>
 #include <sstream>
 #include <exception>
+#include <unordered_set>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -45,6 +46,8 @@ namespace Utils {
     typedef std::tuple<std::string, std::string, std::string> record;
     typedef std::vector<record> ResultVector;
     static const std::string kQueryWildcard = "***";
+    
+    static const std::unordered_set<std::string> ValidCommands {"CREATE", "GET", "GETS", "GETP", "GETO", "DELETE", "CLEAR", "QUIT"};
 
     template<typename T>
     std::string toString(T t) {
@@ -76,7 +79,7 @@ namespace Utils {
     public:
 
         virtual const char* what() const throw () {
-            return "Parameters error!";
+            return "Syntax Error in command!";
         }
     };
 }

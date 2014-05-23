@@ -82,7 +82,6 @@ void run() {
     db = new TrisDb(conf);
     test();
 
-    //LogManager::getSingleton()->log(LogManager::INFO, std::get<1>(db->getFromA("Gianluca")));
     // TcpServer *tcp = new TcpServer(db);
     // UnixSocket *ux = new UnixSocket(db);
 }
@@ -149,8 +148,10 @@ void shell() {
                 }
                 if (q.command.substr(0, 2) == "GE") tp.PrintFooter();
                 double now = TimeUtils::getCurrentTimestamp();
-                if (q.command.substr(0, 2) == "GE") std::cout << "\nRead " << r.size() << " rows in " << now - q.timestamp << "ms" << std::endl << std::endl;
-                else std::cout << "Query executed in " << now - q.timestamp << "ms" << std::endl << std::endl;
+                int queryTime = now-q.timestamp;
+                if(queryTime == 0) queryTime = 1;
+                if (q.command.substr(0, 2) == "GE") std::cout << "\nRead " << r.size() << " rows in " << queryTime << "ms" << std::endl << std::endl;
+                else std::cout << "Query executed in " << queryTime << "ms" << std::endl << std::endl;
             }
         } catch (Utils::CustomException& e) {
             LogManager::getSingleton()->log(LogManager::ERROR, e.what());
@@ -189,8 +190,10 @@ void shell() {
                 }
                 if (q.command.substr(0, 2) == "GE") tp.PrintFooter();
                 double now = TimeUtils::getCurrentTimestamp();
-                if (q.command.substr(0, 2) == "GE") std::cout << "\nRead " << r.size() << " rows in " << now - q.timestamp << "ms" << std::endl << std::endl;
-                else std::cout << "Query executed in " << now - q.timestamp << "ms" << std::endl << std::endl;
+                int queryTime = now-q.timestamp;
+                if(queryTime == 0) queryTime = 1;
+                if (q.command.substr(0, 2) == "GE") std::cout << "\nRead " << r.size() << " rows in " << queryTime << "ms" << std::endl << std::endl;
+                else std::cout << "Query executed in " << queryTime << "ms" << std::endl << std::endl;
             }
         } catch (Utils::CustomException& e) {
             LogManager::getSingleton()->log(LogManager::ERROR, e.what());

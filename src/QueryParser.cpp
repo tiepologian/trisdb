@@ -24,6 +24,10 @@ QueryParser::Query QueryParser::parse(std::string s) {
     q.timestamp = TimeUtils::getCurrentTimestamp();
     unsigned pos = s.find(" ");
     q.command = boost::to_upper_copy(s.substr(0, pos));
+    
+    // is the command valid?
+    Utils::CustomException ex;
+    if(Utils::ValidCommands.find(q.command) == Utils::ValidCommands.end()) throw ex;
 
     if (q.command == "QUIT" || q.command == "CLEAR") return q;
 
@@ -38,8 +42,13 @@ QueryParser::Query QueryParser::parse(std::string s) {
     }
 
     // are there enough argsuments..?
-    Utils::CustomException ex;
-    if (params.size() < 3) throw ex;
+    if (params.size() < 3) {
+        if(q.command == "CREATE") throw ex;
+        // only first value in get, assume wildcards for other two
+        else q.parameters = std::make_tuple(params.at(0), Utils::kQueryWildcard, Utils::kQueryWildcard);
+        return q;
+    }
+        
     q.parameters = std::make_tuple(params.at(0), params.at(1), params.at(2));
     return q;
 }
