@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
 #include <algorithm> 
 #include <functional> 
 #include <cctype>

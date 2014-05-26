@@ -12,6 +12,7 @@
 #include "LogManager.h"
 #include "param_t.h"
 #include "table_printer.h"
+#include "TcpServer.h"
 
 #ifdef __linux__
 #include <readline/readline.h>
@@ -44,7 +45,7 @@ int main(int argc, char *argv[]) {
         // If server starts, start TCP server
         run();
     } catch (std::exception& e) {
-        LogManager::getSingleton()->log(LogManager::ERROR, e.what());
+        //LogManager::getSingleton()->log(LogManager::ERROR, e.what());
         return 1;
     }
 
@@ -80,9 +81,10 @@ void run() {
     LogManager::getSingleton()->log(LogManager::INFO, "Using config " + conf->getName());
     LogManager::getSingleton()->log(LogManager::INFO, "Logging to " + conf->getSetting("logfile"));
     db = new TrisDb(conf);
-    test();
+    //test();
 
-    // TcpServer *tcp = new TcpServer(db);
+    TcpServer* tcp = new TcpServer(db);
+    tcp->run();
     // UnixSocket *ux = new UnixSocket(db);
 }
 
@@ -196,7 +198,7 @@ void shell() {
                 else std::cout << "Query executed in " << queryTime << "ms" << std::endl << std::endl;
             }
         } catch (Utils::CustomException& e) {
-            LogManager::getSingleton()->log(LogManager::ERROR, e.what());
+            //LogManager::getSingleton()->log(LogManager::ERROR, e.what());
         }
     }
 #endif
