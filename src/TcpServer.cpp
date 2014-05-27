@@ -24,6 +24,7 @@ TcpServer::~TcpServer() {
 }
 
 void TcpServer::session(tcp::socket sock) {
+    // !!! THIS IS RUN IN A NEW THREAD !!!
     try {
         for (;;) {
             char data[max_length];
@@ -34,13 +35,29 @@ void TcpServer::session(tcp::socket sock) {
                 break; // Connection closed cleanly by peer.
             else if (error)
                 throw asio::system_error(error); // Some other error.
-            asio::write(sock, asio::buffer(data, length));
-            Message message;
+
+            QueryRequest req;
             std::string ss(data);
-            message.ParseFromString(ss);
-            std::cout << "Message: " << message.query() << std::endl;
-            double tms = message.timestamp();
-            std::cout << "Timestamp: " << tms << std::endl;
+            req.ParseFromString(ss);
+
+            QueryParser::Query q = this->_db->getParser()->parse(req.query());
+            Utils::ResultVector result = this->_db->getPlanner()->execute(q);
+            QueryResponse res;
+            double queryTime = TimeUtils::getCurrentTimestamp() - q.timestamp;
+            res.set_timestamp(std::to_string(queryTime));
+            for (Utils::ResultVector::const_iterator it = result.begin(); it != result.end(); ++it) {
+                QueryResponse::Record* rec = res.add_data();
+                rec->set_subject(std::get<0>(*it));
+                rec->set_predicate(std::get<1>(*it));
+                rec->set_object(std::get<2>(*it));
+                //std::cout << std::get<0>(*it) << "-" << std::get<1>(*it) << "-" << std::get<2>(*it) << std::endl;
+            }
+            
+            asio::streambuf b;
+            std::ostream os(&b);
+            res.SerializeToOstream(&os);
+            asio::write(sock, b);
+            //sock.close();
         }
 
     } catch (std::exception& e) {
@@ -59,6 +76,7 @@ void TcpServer::server(asio::io_service& io_service, unsigned short port) {
 
 void TcpServer::run() {
     try {
+        std::cout.sync_with_stdio(true);
         asio::io_service io_service;
         server(io_service, 1205);
     } catch (std::exception& ex) {

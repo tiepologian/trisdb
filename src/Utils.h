@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <ostream>
 #include <algorithm> 
 #include <functional> 
 #include <cctype>
@@ -47,8 +48,8 @@ namespace Utils {
     typedef std::tuple<std::string, std::string, std::string> record;
     typedef std::vector<record> ResultVector;
     static const std::string kQueryWildcard = "***";
-    
-    static const std::unordered_set<std::string> ValidCommands {"CREATE", "GET", "GETS", "GETP", "GETO", "DELETE", "CLEAR", "QUIT"};
+
+    static const std::unordered_set<std::string> ValidCommands{"CREATE", "GET", "GETS", "GETP", "GETO", "DELETE", "CLEAR", "QUIT"};
 
     template<typename T>
     std::string toString(T t) {
@@ -73,6 +74,13 @@ namespace Utils {
                 v.push_back(std::string());
             ss.clear();
             ss >> ws_delim;
+        }
+    }
+
+    inline std::ostream& operator <<(std::ostream &o, const std::vector<record> &r) {
+	std::cout << "Starting cout" << std::endl;
+        for (Utils::ResultVector::const_iterator it = r.begin(); it != r.end(); ++it) {
+            std::cout << std::get<0>(*it) << "-" << std::get<1>(*it) << "-" << std::get<2>(*it);
         }
     }
 

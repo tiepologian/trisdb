@@ -31,18 +31,20 @@ void  protobuf_AddDesc_message_2eproto();
 void protobuf_AssignDesc_message_2eproto();
 void protobuf_ShutdownFile_message_2eproto();
 
-class Message;
+class QueryRequest;
+class QueryResponse;
+class QueryResponse_Record;
 
 // ===================================================================
 
-class Message : public ::google::protobuf::Message {
+class QueryRequest : public ::google::protobuf::Message {
  public:
-  Message();
-  virtual ~Message();
+  QueryRequest();
+  virtual ~QueryRequest();
 
-  Message(const Message& from);
+  QueryRequest(const QueryRequest& from);
 
-  inline Message& operator=(const Message& from) {
+  inline QueryRequest& operator=(const QueryRequest& from) {
     CopyFrom(from);
     return *this;
   }
@@ -56,17 +58,17 @@ class Message : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const Message& default_instance();
+  static const QueryRequest& default_instance();
 
-  void Swap(Message* other);
+  void Swap(QueryRequest* other);
 
   // implements Message ----------------------------------------------
 
-  Message* New() const;
+  QueryRequest* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const Message& from);
-  void MergeFrom(const Message& from);
+  void CopyFrom(const QueryRequest& from);
+  void MergeFrom(const QueryRequest& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -101,14 +103,19 @@ class Message : public ::google::protobuf::Message {
   inline ::std::string* release_query();
   inline void set_allocated_query(::std::string* query);
 
-  // optional double timestamp = 2;
+  // optional string timestamp = 2;
   inline bool has_timestamp() const;
   inline void clear_timestamp();
   static const int kTimestampFieldNumber = 2;
-  inline double timestamp() const;
-  inline void set_timestamp(double value);
+  inline const ::std::string& timestamp() const;
+  inline void set_timestamp(const ::std::string& value);
+  inline void set_timestamp(const char* value);
+  inline void set_timestamp(const char* value, size_t size);
+  inline ::std::string* mutable_timestamp();
+  inline ::std::string* release_timestamp();
+  inline void set_allocated_timestamp(::std::string* timestamp);
 
-  // @@protoc_insertion_point(class_scope:Message)
+  // @@protoc_insertion_point(class_scope:QueryRequest)
  private:
   inline void set_has_query();
   inline void clear_has_query();
@@ -118,7 +125,7 @@ class Message : public ::google::protobuf::Message {
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* query_;
-  double timestamp_;
+  ::std::string* timestamp_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
@@ -128,63 +135,282 @@ class Message : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_message_2eproto();
 
   void InitAsDefaultInstance();
-  static Message* default_instance_;
+  static QueryRequest* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class QueryResponse_Record : public ::google::protobuf::Message {
+ public:
+  QueryResponse_Record();
+  virtual ~QueryResponse_Record();
+
+  QueryResponse_Record(const QueryResponse_Record& from);
+
+  inline QueryResponse_Record& operator=(const QueryResponse_Record& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const QueryResponse_Record& default_instance();
+
+  void Swap(QueryResponse_Record* other);
+
+  // implements Message ----------------------------------------------
+
+  QueryResponse_Record* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const QueryResponse_Record& from);
+  void MergeFrom(const QueryResponse_Record& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required string subject = 1;
+  inline bool has_subject() const;
+  inline void clear_subject();
+  static const int kSubjectFieldNumber = 1;
+  inline const ::std::string& subject() const;
+  inline void set_subject(const ::std::string& value);
+  inline void set_subject(const char* value);
+  inline void set_subject(const char* value, size_t size);
+  inline ::std::string* mutable_subject();
+  inline ::std::string* release_subject();
+  inline void set_allocated_subject(::std::string* subject);
+
+  // required string predicate = 2;
+  inline bool has_predicate() const;
+  inline void clear_predicate();
+  static const int kPredicateFieldNumber = 2;
+  inline const ::std::string& predicate() const;
+  inline void set_predicate(const ::std::string& value);
+  inline void set_predicate(const char* value);
+  inline void set_predicate(const char* value, size_t size);
+  inline ::std::string* mutable_predicate();
+  inline ::std::string* release_predicate();
+  inline void set_allocated_predicate(::std::string* predicate);
+
+  // required string object = 3;
+  inline bool has_object() const;
+  inline void clear_object();
+  static const int kObjectFieldNumber = 3;
+  inline const ::std::string& object() const;
+  inline void set_object(const ::std::string& value);
+  inline void set_object(const char* value);
+  inline void set_object(const char* value, size_t size);
+  inline ::std::string* mutable_object();
+  inline ::std::string* release_object();
+  inline void set_allocated_object(::std::string* object);
+
+  // @@protoc_insertion_point(class_scope:QueryResponse.Record)
+ private:
+  inline void set_has_subject();
+  inline void clear_has_subject();
+  inline void set_has_predicate();
+  inline void clear_has_predicate();
+  inline void set_has_object();
+  inline void clear_has_object();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* subject_;
+  ::std::string* predicate_;
+  ::std::string* object_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_message_2eproto();
+  friend void protobuf_AssignDesc_message_2eproto();
+  friend void protobuf_ShutdownFile_message_2eproto();
+
+  void InitAsDefaultInstance();
+  static QueryResponse_Record* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class QueryResponse : public ::google::protobuf::Message {
+ public:
+  QueryResponse();
+  virtual ~QueryResponse();
+
+  QueryResponse(const QueryResponse& from);
+
+  inline QueryResponse& operator=(const QueryResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const QueryResponse& default_instance();
+
+  void Swap(QueryResponse* other);
+
+  // implements Message ----------------------------------------------
+
+  QueryResponse* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const QueryResponse& from);
+  void MergeFrom(const QueryResponse& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef QueryResponse_Record Record;
+
+  // accessors -------------------------------------------------------
+
+  // repeated .QueryResponse.Record data = 1;
+  inline int data_size() const;
+  inline void clear_data();
+  static const int kDataFieldNumber = 1;
+  inline const ::QueryResponse_Record& data(int index) const;
+  inline ::QueryResponse_Record* mutable_data(int index);
+  inline ::QueryResponse_Record* add_data();
+  inline const ::google::protobuf::RepeatedPtrField< ::QueryResponse_Record >&
+      data() const;
+  inline ::google::protobuf::RepeatedPtrField< ::QueryResponse_Record >*
+      mutable_data();
+
+  // optional string timestamp = 2;
+  inline bool has_timestamp() const;
+  inline void clear_timestamp();
+  static const int kTimestampFieldNumber = 2;
+  inline const ::std::string& timestamp() const;
+  inline void set_timestamp(const ::std::string& value);
+  inline void set_timestamp(const char* value);
+  inline void set_timestamp(const char* value, size_t size);
+  inline ::std::string* mutable_timestamp();
+  inline ::std::string* release_timestamp();
+  inline void set_allocated_timestamp(::std::string* timestamp);
+
+  // @@protoc_insertion_point(class_scope:QueryResponse)
+ private:
+  inline void set_has_timestamp();
+  inline void clear_has_timestamp();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::RepeatedPtrField< ::QueryResponse_Record > data_;
+  ::std::string* timestamp_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_message_2eproto();
+  friend void protobuf_AssignDesc_message_2eproto();
+  friend void protobuf_ShutdownFile_message_2eproto();
+
+  void InitAsDefaultInstance();
+  static QueryResponse* default_instance_;
 };
 // ===================================================================
 
 
 // ===================================================================
 
-// Message
+// QueryRequest
 
 // required string query = 1;
-inline bool Message::has_query() const {
+inline bool QueryRequest::has_query() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void Message::set_has_query() {
+inline void QueryRequest::set_has_query() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void Message::clear_has_query() {
+inline void QueryRequest::clear_has_query() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void Message::clear_query() {
+inline void QueryRequest::clear_query() {
   if (query_ != &::google::protobuf::internal::kEmptyString) {
     query_->clear();
   }
   clear_has_query();
 }
-inline const ::std::string& Message::query() const {
+inline const ::std::string& QueryRequest::query() const {
   return *query_;
 }
-inline void Message::set_query(const ::std::string& value) {
+inline void QueryRequest::set_query(const ::std::string& value) {
   set_has_query();
   if (query_ == &::google::protobuf::internal::kEmptyString) {
     query_ = new ::std::string;
   }
   query_->assign(value);
 }
-inline void Message::set_query(const char* value) {
+inline void QueryRequest::set_query(const char* value) {
   set_has_query();
   if (query_ == &::google::protobuf::internal::kEmptyString) {
     query_ = new ::std::string;
   }
   query_->assign(value);
 }
-inline void Message::set_query(const char* value, size_t size) {
+inline void QueryRequest::set_query(const char* value, size_t size) {
   set_has_query();
   if (query_ == &::google::protobuf::internal::kEmptyString) {
     query_ = new ::std::string;
   }
   query_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* Message::mutable_query() {
+inline ::std::string* QueryRequest::mutable_query() {
   set_has_query();
   if (query_ == &::google::protobuf::internal::kEmptyString) {
     query_ = new ::std::string;
   }
   return query_;
 }
-inline ::std::string* Message::release_query() {
+inline ::std::string* QueryRequest::release_query() {
   clear_has_query();
   if (query_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
@@ -194,7 +420,7 @@ inline ::std::string* Message::release_query() {
     return temp;
   }
 }
-inline void Message::set_allocated_query(::std::string* query) {
+inline void QueryRequest::set_allocated_query(::std::string* query) {
   if (query_ != &::google::protobuf::internal::kEmptyString) {
     delete query_;
   }
@@ -207,26 +433,387 @@ inline void Message::set_allocated_query(::std::string* query) {
   }
 }
 
-// optional double timestamp = 2;
-inline bool Message::has_timestamp() const {
+// optional string timestamp = 2;
+inline bool QueryRequest::has_timestamp() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void Message::set_has_timestamp() {
+inline void QueryRequest::set_has_timestamp() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void Message::clear_has_timestamp() {
+inline void QueryRequest::clear_has_timestamp() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void Message::clear_timestamp() {
-  timestamp_ = 0;
+inline void QueryRequest::clear_timestamp() {
+  if (timestamp_ != &::google::protobuf::internal::kEmptyString) {
+    timestamp_->clear();
+  }
   clear_has_timestamp();
 }
-inline double Message::timestamp() const {
+inline const ::std::string& QueryRequest::timestamp() const {
+  return *timestamp_;
+}
+inline void QueryRequest::set_timestamp(const ::std::string& value) {
+  set_has_timestamp();
+  if (timestamp_ == &::google::protobuf::internal::kEmptyString) {
+    timestamp_ = new ::std::string;
+  }
+  timestamp_->assign(value);
+}
+inline void QueryRequest::set_timestamp(const char* value) {
+  set_has_timestamp();
+  if (timestamp_ == &::google::protobuf::internal::kEmptyString) {
+    timestamp_ = new ::std::string;
+  }
+  timestamp_->assign(value);
+}
+inline void QueryRequest::set_timestamp(const char* value, size_t size) {
+  set_has_timestamp();
+  if (timestamp_ == &::google::protobuf::internal::kEmptyString) {
+    timestamp_ = new ::std::string;
+  }
+  timestamp_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* QueryRequest::mutable_timestamp() {
+  set_has_timestamp();
+  if (timestamp_ == &::google::protobuf::internal::kEmptyString) {
+    timestamp_ = new ::std::string;
+  }
   return timestamp_;
 }
-inline void Message::set_timestamp(double value) {
+inline ::std::string* QueryRequest::release_timestamp() {
+  clear_has_timestamp();
+  if (timestamp_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = timestamp_;
+    timestamp_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void QueryRequest::set_allocated_timestamp(::std::string* timestamp) {
+  if (timestamp_ != &::google::protobuf::internal::kEmptyString) {
+    delete timestamp_;
+  }
+  if (timestamp) {
+    set_has_timestamp();
+    timestamp_ = timestamp;
+  } else {
+    clear_has_timestamp();
+    timestamp_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// QueryResponse_Record
+
+// required string subject = 1;
+inline bool QueryResponse_Record::has_subject() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void QueryResponse_Record::set_has_subject() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void QueryResponse_Record::clear_has_subject() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void QueryResponse_Record::clear_subject() {
+  if (subject_ != &::google::protobuf::internal::kEmptyString) {
+    subject_->clear();
+  }
+  clear_has_subject();
+}
+inline const ::std::string& QueryResponse_Record::subject() const {
+  return *subject_;
+}
+inline void QueryResponse_Record::set_subject(const ::std::string& value) {
+  set_has_subject();
+  if (subject_ == &::google::protobuf::internal::kEmptyString) {
+    subject_ = new ::std::string;
+  }
+  subject_->assign(value);
+}
+inline void QueryResponse_Record::set_subject(const char* value) {
+  set_has_subject();
+  if (subject_ == &::google::protobuf::internal::kEmptyString) {
+    subject_ = new ::std::string;
+  }
+  subject_->assign(value);
+}
+inline void QueryResponse_Record::set_subject(const char* value, size_t size) {
+  set_has_subject();
+  if (subject_ == &::google::protobuf::internal::kEmptyString) {
+    subject_ = new ::std::string;
+  }
+  subject_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* QueryResponse_Record::mutable_subject() {
+  set_has_subject();
+  if (subject_ == &::google::protobuf::internal::kEmptyString) {
+    subject_ = new ::std::string;
+  }
+  return subject_;
+}
+inline ::std::string* QueryResponse_Record::release_subject() {
+  clear_has_subject();
+  if (subject_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = subject_;
+    subject_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void QueryResponse_Record::set_allocated_subject(::std::string* subject) {
+  if (subject_ != &::google::protobuf::internal::kEmptyString) {
+    delete subject_;
+  }
+  if (subject) {
+    set_has_subject();
+    subject_ = subject;
+  } else {
+    clear_has_subject();
+    subject_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string predicate = 2;
+inline bool QueryResponse_Record::has_predicate() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void QueryResponse_Record::set_has_predicate() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void QueryResponse_Record::clear_has_predicate() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void QueryResponse_Record::clear_predicate() {
+  if (predicate_ != &::google::protobuf::internal::kEmptyString) {
+    predicate_->clear();
+  }
+  clear_has_predicate();
+}
+inline const ::std::string& QueryResponse_Record::predicate() const {
+  return *predicate_;
+}
+inline void QueryResponse_Record::set_predicate(const ::std::string& value) {
+  set_has_predicate();
+  if (predicate_ == &::google::protobuf::internal::kEmptyString) {
+    predicate_ = new ::std::string;
+  }
+  predicate_->assign(value);
+}
+inline void QueryResponse_Record::set_predicate(const char* value) {
+  set_has_predicate();
+  if (predicate_ == &::google::protobuf::internal::kEmptyString) {
+    predicate_ = new ::std::string;
+  }
+  predicate_->assign(value);
+}
+inline void QueryResponse_Record::set_predicate(const char* value, size_t size) {
+  set_has_predicate();
+  if (predicate_ == &::google::protobuf::internal::kEmptyString) {
+    predicate_ = new ::std::string;
+  }
+  predicate_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* QueryResponse_Record::mutable_predicate() {
+  set_has_predicate();
+  if (predicate_ == &::google::protobuf::internal::kEmptyString) {
+    predicate_ = new ::std::string;
+  }
+  return predicate_;
+}
+inline ::std::string* QueryResponse_Record::release_predicate() {
+  clear_has_predicate();
+  if (predicate_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = predicate_;
+    predicate_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void QueryResponse_Record::set_allocated_predicate(::std::string* predicate) {
+  if (predicate_ != &::google::protobuf::internal::kEmptyString) {
+    delete predicate_;
+  }
+  if (predicate) {
+    set_has_predicate();
+    predicate_ = predicate;
+  } else {
+    clear_has_predicate();
+    predicate_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string object = 3;
+inline bool QueryResponse_Record::has_object() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void QueryResponse_Record::set_has_object() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void QueryResponse_Record::clear_has_object() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void QueryResponse_Record::clear_object() {
+  if (object_ != &::google::protobuf::internal::kEmptyString) {
+    object_->clear();
+  }
+  clear_has_object();
+}
+inline const ::std::string& QueryResponse_Record::object() const {
+  return *object_;
+}
+inline void QueryResponse_Record::set_object(const ::std::string& value) {
+  set_has_object();
+  if (object_ == &::google::protobuf::internal::kEmptyString) {
+    object_ = new ::std::string;
+  }
+  object_->assign(value);
+}
+inline void QueryResponse_Record::set_object(const char* value) {
+  set_has_object();
+  if (object_ == &::google::protobuf::internal::kEmptyString) {
+    object_ = new ::std::string;
+  }
+  object_->assign(value);
+}
+inline void QueryResponse_Record::set_object(const char* value, size_t size) {
+  set_has_object();
+  if (object_ == &::google::protobuf::internal::kEmptyString) {
+    object_ = new ::std::string;
+  }
+  object_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* QueryResponse_Record::mutable_object() {
+  set_has_object();
+  if (object_ == &::google::protobuf::internal::kEmptyString) {
+    object_ = new ::std::string;
+  }
+  return object_;
+}
+inline ::std::string* QueryResponse_Record::release_object() {
+  clear_has_object();
+  if (object_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = object_;
+    object_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void QueryResponse_Record::set_allocated_object(::std::string* object) {
+  if (object_ != &::google::protobuf::internal::kEmptyString) {
+    delete object_;
+  }
+  if (object) {
+    set_has_object();
+    object_ = object;
+  } else {
+    clear_has_object();
+    object_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// QueryResponse
+
+// repeated .QueryResponse.Record data = 1;
+inline int QueryResponse::data_size() const {
+  return data_.size();
+}
+inline void QueryResponse::clear_data() {
+  data_.Clear();
+}
+inline const ::QueryResponse_Record& QueryResponse::data(int index) const {
+  return data_.Get(index);
+}
+inline ::QueryResponse_Record* QueryResponse::mutable_data(int index) {
+  return data_.Mutable(index);
+}
+inline ::QueryResponse_Record* QueryResponse::add_data() {
+  return data_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::QueryResponse_Record >&
+QueryResponse::data() const {
+  return data_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::QueryResponse_Record >*
+QueryResponse::mutable_data() {
+  return &data_;
+}
+
+// optional string timestamp = 2;
+inline bool QueryResponse::has_timestamp() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void QueryResponse::set_has_timestamp() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void QueryResponse::clear_has_timestamp() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void QueryResponse::clear_timestamp() {
+  if (timestamp_ != &::google::protobuf::internal::kEmptyString) {
+    timestamp_->clear();
+  }
+  clear_has_timestamp();
+}
+inline const ::std::string& QueryResponse::timestamp() const {
+  return *timestamp_;
+}
+inline void QueryResponse::set_timestamp(const ::std::string& value) {
   set_has_timestamp();
-  timestamp_ = value;
+  if (timestamp_ == &::google::protobuf::internal::kEmptyString) {
+    timestamp_ = new ::std::string;
+  }
+  timestamp_->assign(value);
+}
+inline void QueryResponse::set_timestamp(const char* value) {
+  set_has_timestamp();
+  if (timestamp_ == &::google::protobuf::internal::kEmptyString) {
+    timestamp_ = new ::std::string;
+  }
+  timestamp_->assign(value);
+}
+inline void QueryResponse::set_timestamp(const char* value, size_t size) {
+  set_has_timestamp();
+  if (timestamp_ == &::google::protobuf::internal::kEmptyString) {
+    timestamp_ = new ::std::string;
+  }
+  timestamp_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* QueryResponse::mutable_timestamp() {
+  set_has_timestamp();
+  if (timestamp_ == &::google::protobuf::internal::kEmptyString) {
+    timestamp_ = new ::std::string;
+  }
+  return timestamp_;
+}
+inline ::std::string* QueryResponse::release_timestamp() {
+  clear_has_timestamp();
+  if (timestamp_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = timestamp_;
+    timestamp_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void QueryResponse::set_allocated_timestamp(::std::string* timestamp) {
+  if (timestamp_ != &::google::protobuf::internal::kEmptyString) {
+    delete timestamp_;
+  }
+  if (timestamp) {
+    set_has_timestamp();
+    timestamp_ = timestamp;
+  } else {
+    clear_has_timestamp();
+    timestamp_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
 }
 
 
