@@ -10,3 +10,11 @@ all:
 
 clean:
 	$(RM) dist/trisdb
+
+install:
+	install -D dist/trisdb /usr/local/bin/trisdb
+	install -D utils/trisdb-init.conf /etc/init/trisdb.conf
+
+uninstall:
+	$(RM) /usr/local/bin/trisdb
+	$(RM) /etc/init/trisdb.conf
