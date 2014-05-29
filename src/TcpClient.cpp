@@ -50,6 +50,7 @@ QueryResponse TcpClient::connect(QueryRequest req) {
 
 bool TcpClient::checkConnection() {
     try {
+        std::cout << "Boost version: " << BOOST_LIB_VERSION << std::endl;
         boost::asio::io_service io_service;
         tcp::socket s(io_service);
         tcp::resolver resolver(io_service);

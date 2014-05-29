@@ -10,7 +10,7 @@
 
 #include <thread>
 #include <utility>
-#include <asio.hpp>
+#include <boost/asio.hpp>
 #include "Utils.h"
 #include "TrisDb.h"
 #include "message.pb.h"
@@ -23,8 +23,8 @@ public:
     void run();
 private:
     TrisDb* _db;
-    void session(asio::ip::tcp::socket sock);
-    void server(asio::io_service& io_service, unsigned short port);
+    void session(boost::asio::ip::tcp::socket sock);
+    void server(boost::asio::io_service& io_service, unsigned short port);
 };
 
 #endif	/* TCPSERVER_H */
