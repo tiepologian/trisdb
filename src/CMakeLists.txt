@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 2.8)
+project(trisdb)
+
+add_executable(trisdb Config.cpp LogManager.cpp main.cpp message.pb.h param_t.h QueryParser.h QueryPlanner.h Shell.h table_printer.h TcpClient.cpp TcpServer.cpp TimeUtils.cpp Tokenizer.cpp TripleMap.h TrisDb.h Config.h LogManager.h message.pb.cc param_t.cpp QueryParser.cpp QueryPlanner.cpp Shell.cpp table_printer.cpp table_printer.tpp.h TcpClient.h TcpServer.h TimeUtils.h Tokenizer.h TrisDb.cpp Utils.h Config.cpp LogManager.cpp main.cpp message.pb.h param_t.h QueryParser.h QueryPlanner.h Shell.h table_printer.h TcpClient.cpp TcpServer.cpp TimeUtils.cpp Tokenizer.cpp TripleMap.h TrisDb.h Config.h LogManager.h message.pb.cc param_t.cpp QueryParser.cpp QueryPlanner.cpp Shell.cpp table_printer.cpp table_printer.tpp.h TcpClient.h TcpServer.h TimeUtils.h Tokenizer.h TrisDb.cpp Utils.h)
+
+set(EXECUTABLE_OUTPUT_PATH ../dist/)
+set(CMAKE_CXX_FLAGS "-O3 -DUSE_BOOST_KARMA")
+target_link_libraries(trisdb readline protobuf pthread boost_system)
+
+install(TARGETS trisdb DESTINATION /usr/local/bin/)
+install (FILES ../utils/trisdb-init.conf DESTINATION /etc/init/ RENAME trisdb.conf)
+
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+if(COMPILER_SUPPORTS_CXX11)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+elseif(COMPILER_SUPPORTS_CXX0X)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+else()
+        message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
