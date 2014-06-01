@@ -22,3 +22,13 @@ std::string TimeUtils::getTimeString() {
     std::string tmp = std::asctime(localtime(&tt));
     return Utils::rtrim(tmp);
 }
+
+std::string TimeUtils::getCustomTimeString() {
+    time_t rawtime;
+    struct tm * timeinfo;
+    time ( &rawtime );
+    timeinfo = localtime ( &rawtime );
+    char output[30];
+    strftime(output, 30, "%d %b %Y %T", timeinfo);
+    return std::string(output);
+}

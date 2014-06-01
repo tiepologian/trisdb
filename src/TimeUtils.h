@@ -18,6 +18,7 @@ public:
     TimeUtils();
     static double getCurrentTimestamp();
     static std::string getTimeString();
+    static std::string getCustomTimeString();
 };
 
 #endif	/* TIMEUTILS_H */

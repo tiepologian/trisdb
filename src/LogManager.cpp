@@ -17,7 +17,7 @@ LogManager* LogManager::getSingleton() {
 }
 
 void LogManager::log(Severity s, std::string message) {
-    std::string msg = TimeUtils::getTimeString();
+    std::string msg = TimeUtils::getCustomTimeString();
     switch(s) {
         case 3:
             msg.append(" [INFO]: ");
