@@ -88,6 +88,8 @@ void TrisDb::run() {
     for(auto &i : this->_servers) {
         i->stop();
     }
+    // give the other threads time to terminate
+    sleep(2);
 }
 
 void TrisDb::stop(int param) {

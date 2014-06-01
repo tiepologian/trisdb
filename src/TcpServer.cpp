@@ -24,23 +24,57 @@ TcpServer::~TcpServer() {
     //
 }
 
-void TcpServer::session(tcp::socket sock) {
-    // !!! THIS IS RUN IN A NEW THREAD !!!
+void TcpServer::server() {
+    LogManager::getSingleton()->log(LogManager::LINFO, "Listening for TCP connections on port 1205");
+    AsyncTcpServer s(io_service, 1205, this->_db);
+    // 2nd thread blocks here
+    io_service.run();
+}
+
+void TcpServer::run() {
     try {
-        for (;;) {
-            char data[max_length];
+        std::cout.sync_with_stdio(true);
+        std::thread(&TcpServer::server, this).detach();
+    } catch (std::exception& ex) {
+        std::cerr << "Exception: " << ex.what() << "\n";
+    }
+}
 
-            //asio::error_code error;
-            boost::system::error_code error;
-            size_t length = sock.read_some(boost::asio::buffer(data), error);
-            if (error == boost::asio::error::eof)
-                break; // Connection closed cleanly by peer.
-            else if (error)
-                throw boost::system::system_error(error); // Some other error.            
-            
+void TcpServer::stop() {
+    LogManager::getSingleton()->log(LogManager::LINFO, "Stopping TCP Server");
+    // stop io_service so 2nd thread terminates
+    io_service.stop();
+}
 
+AsyncTcpServer::AsyncTcpServer(boost::asio::io_service& io_service, short port, TrisDb* tris) : acceptor_(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), socket_(io_service) {
+    do_accept();
+    this->_db = tris;
+}
+
+void AsyncTcpServer::do_accept() {
+    acceptor_.async_accept(socket_, [this](boost::system::error_code ec) {
+        if (!ec) {
+            std::make_shared<AsyncTcpSession>(std::move(socket_), this->_db)->start();
+        }
+        do_accept();
+    });
+}
+
+AsyncTcpSession::AsyncTcpSession(boost::asio::ip::tcp::socket socket, TrisDb* tris) : socket_(std::move(socket)) {
+    this->_db = tris;
+}
+
+void AsyncTcpSession::start() {
+    do_read();
+}
+
+void AsyncTcpSession::do_read() {
+    auto self(shared_from_this());
+    socket_.async_read_some(boost::asio::buffer(data_, max_length), [this, self](boost::system::error_code ec, std::size_t length) {
+        if (!ec) {
+            // de-serialize data, exec query and write result
             QueryRequest req;
-            std::string ss(data);
+            std::string ss(data_);
             req.ParseFromString(ss);
 
             QueryParser::Query q = this->_db->getParser()->parse(req.query());
@@ -53,40 +87,18 @@ void TcpServer::session(tcp::socket sock) {
                 rec->set_subject(std::get<0>(*it));
                 rec->set_predicate(std::get<1>(*it));
                 rec->set_object(std::get<2>(*it));
-            }
-            
-            boost::asio::streambuf b;
-            std::ostream os(&b);
-            res.SerializeToOstream(&os);
-            boost::asio::write(sock, b);
+            }                        
+            std::string resS = res.SerializeAsString();
+            do_write(resS);
         }
-
-    } catch (std::exception& e) {
-        std::cerr << "Exception in thread: " << e.what() << "\n";
-    }
+    });
 }
 
-void TcpServer::server() {    
-    LogManager::getSingleton()->log(LogManager::LINFO, "Listening for TCP connections on port 1205");
-    boost::asio::io_service io_service;
-    unsigned short port = 1205;
-    tcp::acceptor a(io_service, tcp::endpoint(tcp::v4(), port));
-    for (;;) {
-        tcp::socket sock(io_service);
-        a.accept(sock);
-        std::thread(&TcpServer::session, this, std::move(sock)).detach();
-    }
-}
-
-void TcpServer::run() {
-    try {
-        std::cout.sync_with_stdio(true);        
-        std::thread(&TcpServer::server, this).detach();
-    } catch (std::exception& ex) {
-        std::cerr << "Exception: " << ex.what() << "\n";
-    }
-}
-
-void TcpServer::stop() {
-    LogManager::getSingleton()->log(LogManager::LINFO, "Stopping TCP Server");    
+void AsyncTcpSession::do_write(std::string res) {
+    auto self(shared_from_this());
+    boost::asio::async_write(socket_, boost::asio::buffer(res.c_str(), (size_t)1024), [this, self](boost::system::error_code ec, std::size_t) {
+        if (!ec) {
+            do_read();
+        }
+    });
 }
