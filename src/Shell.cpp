@@ -20,7 +20,7 @@ Shell::~Shell() {
 }
 
 void Shell::run() {
-    if(TcpClient::checkConnection()) LogManager::getSingleton()->log(LogManager::INFO, "Shell ready");
+    if(TcpClient::checkConnection()) LogManager::getSingleton()->log(LogManager::LINFO, "Shell ready");
     std::cout << std::endl;
 #ifdef __linux__
     char *buf;
@@ -37,7 +37,7 @@ void Shell::run() {
                 printQueryResult(client->connect(req), boost::to_upper_copy(input.substr(0, input.find(" "))));
             }
         } catch (Utils::CustomException& e) {
-            LogManager::getSingleton()->log(LogManager::ERROR, e.what());
+            LogManager::getSingleton()->log(LogManager::LERROR, e.what());
         }
 
         if (buf[0] != 0)

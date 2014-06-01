@@ -11,20 +11,21 @@
 #include <thread>
 #include <utility>
 #include <boost/asio.hpp>
-#include "Utils.h"
 #include "TrisDb.h"
 #include "message.pb.h"
+#include "GenericServer.h"
 
-class TcpServer {
+class TcpServer : public GenericServer {
 public:
     TcpServer(TrisDb* db);
     TcpServer(const TcpServer& orig);
     virtual ~TcpServer();
-    void run();
+    virtual void run();
+    virtual void stop();
 private:
     TrisDb* _db;
     void session(boost::asio::ip::tcp::socket sock);
-    void server(boost::asio::io_service& io_service, unsigned short port);
+    void server();
 };
 
 #endif	/* TCPSERVER_H */

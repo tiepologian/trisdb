@@ -68,15 +68,6 @@ std::deque<int> QueryPlanner::getQueryPlan(QueryParser::Query q) {
     return plan;
 }
 
-Utils::ResultVector QueryPlanner::getIntersection(Utils::ResultVector &a, Utils::ResultVector &b) {
-    Utils::ResultVector res;
-    for (Utils::ResultVector::iterator i = a.begin(); i != a.end(); ++i) {
-        if (std::find(b.begin(), b.end(), *i) != b.end()) {
-            res.push_back(*i);
-        }
-    }
-}
-
 bool QueryPlanner::isEqual(std::string s1, std::string s2) {
     if ((s2 == Utils::kQueryWildcard) || (s1 == s2)) return true;
     else return false;

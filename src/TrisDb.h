@@ -8,14 +8,20 @@
 #ifndef TRISDB_H
 #define	TRISDB_H
 
+#include <thread>
+#include <signal.h>
 #include "TripleMap.h"
 #include "Config.h"
 #include "QueryPlanner.h"
+#include "GenericServer.h"
+#include "TimeUtils.h"
 
 class TrisDb {
 public:
     TrisDb(Config* config);
     virtual ~TrisDb();
+    void addServer(GenericServer* g);
+    void run();
     void create(std::string a, std::string b, std::string c);
     bool remove(std::string a, std::string b, std::string c);
     Utils::ResultVector getFromA(std::string a);
@@ -26,10 +32,13 @@ public:
     void clearAll();
     QueryParser* getParser();
     QueryPlanner* getPlanner();
+    static void stop(int param);
 private:
     TripleMap<std::string, std::string, std::string> dbData;
     QueryParser* _parser;
     QueryPlanner* _planner;
+    std::vector<GenericServer*> _servers;
+    static volatile sig_atomic_t _terminateLoop;
 };
 
 #endif	/* TRISDB_H */

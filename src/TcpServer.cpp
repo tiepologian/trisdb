@@ -6,13 +6,14 @@
  */
 
 #include "TcpServer.h"
+#include "LogManager.h"
 
 using boost::asio::ip::tcp;
-
 const int max_length = 1024;
 
 TcpServer::TcpServer(TrisDb* db) {
     this->_db = db;
+    this->_serverName = "Tcp Server";
 }
 
 TcpServer::TcpServer(const TcpServer& orig) {
@@ -52,14 +53,12 @@ void TcpServer::session(tcp::socket sock) {
                 rec->set_subject(std::get<0>(*it));
                 rec->set_predicate(std::get<1>(*it));
                 rec->set_object(std::get<2>(*it));
-                //std::cout << std::get<0>(*it) << "-" << std::get<1>(*it) << "-" << std::get<2>(*it) << std::endl;
             }
             
             boost::asio::streambuf b;
             std::ostream os(&b);
             res.SerializeToOstream(&os);
             boost::asio::write(sock, b);
-            //sock.close();
         }
 
     } catch (std::exception& e) {
@@ -67,7 +66,10 @@ void TcpServer::session(tcp::socket sock) {
     }
 }
 
-void TcpServer::server(boost::asio::io_service& io_service, unsigned short port) {
+void TcpServer::server() {    
+    LogManager::getSingleton()->log(LogManager::LINFO, "Listening for TCP connections on port 1205");
+    boost::asio::io_service io_service;
+    unsigned short port = 1205;
     tcp::acceptor a(io_service, tcp::endpoint(tcp::v4(), port));
     for (;;) {
         tcp::socket sock(io_service);
@@ -78,10 +80,13 @@ void TcpServer::server(boost::asio::io_service& io_service, unsigned short port)
 
 void TcpServer::run() {
     try {
-        std::cout.sync_with_stdio(true);
-        boost::asio::io_service io_service;
-        server(io_service, 1205);
+        std::cout.sync_with_stdio(true);        
+        std::thread(&TcpServer::server, this).detach();
     } catch (std::exception& ex) {
         std::cerr << "Exception: " << ex.what() << "\n";
     }
+}
+
+void TcpServer::stop() {
+    LogManager::getSingleton()->log(LogManager::LINFO, "Stopping TCP Server");    
 }

@@ -10,6 +10,8 @@
 
 #include <iostream>
 #include <string>
+#include <sys/types.h>
+#include <unistd.h>
 #include <fstream>
 #include <ostream>
 #include <algorithm> 
@@ -77,13 +79,15 @@ namespace Utils {
         }
     }
 
-    inline std::ostream& operator <<(std::ostream &o, const std::vector<record> &r) {
-	std::cout << "Starting cout" << std::endl;
-        for (Utils::ResultVector::const_iterator it = r.begin(); it != r.end(); ++it) {
-            std::cout << std::get<0>(*it) << "-" << std::get<1>(*it) << "-" << std::get<2>(*it);
-        }
+    inline void printAsciiLogo() {
+        std::cout << " _____     _       ____  ____  " << std::endl;
+        std::cout << "|_   _| __(_)___  |  _ \\| __ ) " << std::endl;
+        std::cout << "  | || '__| / __| | | | |  _ \\ " << "   " << TRISDB_VERSION_STR << std::endl;
+        std::cout << "  | || |  | \\__ \\ | |_| | |_) |" << "   PID: " << getpid() << std::endl;
+        std::cout << "  |_||_|  |_|___/ |____/|____/ " << std::endl;
+        std::cout << std::endl;
     }
-
+   
     class CustomException : std::exception {
     public:
 

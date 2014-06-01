@@ -57,7 +57,7 @@ bool TcpClient::checkConnection() {
         s.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
         return true;
     } catch (std::exception& e) {
-        LogManager::getSingleton()->log(LogManager::CRITICAL, "Unable to connect to database on localhost:1205");
+        LogManager::getSingleton()->log(LogManager::LCRITICAL, "Unable to connect to database on localhost:1205");
         exit(1);
         return false;
     }

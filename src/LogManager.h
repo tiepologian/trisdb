@@ -14,10 +14,10 @@
 class LogManager {
 public:
     enum Severity {
-        INFO = 3,
-        WARNING = 2,
-        ERROR = 1,
-        CRITICAL = 0
+        LINFO = 3,
+        LWARNING = 2,
+        LERROR = 1,
+        LCRITICAL = 0
     };
     static LogManager* getSingleton();
     static void log(Severity s, std::string message);    

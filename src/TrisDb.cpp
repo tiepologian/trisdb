@@ -6,13 +6,22 @@
  */
 
 #include "TrisDb.h"
+#include "LogManager.h"
+
+volatile sig_atomic_t TrisDb::_terminateLoop = 0;
 
 TrisDb::TrisDb(Config* config) {
+    signal(SIGTERM, stop);
     this->_parser = new QueryParser();
     this->_planner = new QueryPlanner(this);
 }
 
 TrisDb::~TrisDb() {
+    //
+}
+
+void TrisDb::addServer(GenericServer* g) {
+    this->_servers.push_back(g);
 }
 
 void TrisDb::create(std::string a, std::string b, std::string c) {
@@ -60,4 +69,28 @@ QueryParser* TrisDb::getParser() {
 
 QueryPlanner* TrisDb::getPlanner() {
     return _planner;
+}
+
+void TrisDb::run() {
+    // main thread calls run to start server
+    // every run method creates a new thread, then main thread loops
+    for(auto &i : this->_servers) {
+        LogManager::getSingleton()->log(LogManager::LINFO, "Starting " + i->getServerName());        
+        i->run();
+    }
+    // sleep
+    LogManager::getSingleton()->log(LogManager::LINFO, "Database ready");
+    while(!TrisDb::_terminateLoop) {
+        std::chrono::milliseconds dura(2000);
+        std::this_thread::sleep_for(dura);
+    }
+    // SIGTERM received, stop servers
+    for(auto &i : this->_servers) {
+        i->stop();
+    }
+}
+
+void TrisDb::stop(int param) {
+    LogManager::getSingleton()->log(LogManager::LINFO, "Received signal SIGTERM");
+    TrisDb::_terminateLoop = 1;
 }

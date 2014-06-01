@@ -22,7 +22,6 @@ public:
 private:
     TrisDb* _parent;
     std::deque<int> getQueryPlan(QueryParser::Query q);
-    Utils::ResultVector getIntersection(Utils::ResultVector &a, Utils::ResultVector &b);
     bool isEqual(std::string s1, std::string s2);
 };
 
