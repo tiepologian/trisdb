@@ -87,16 +87,20 @@ void AsyncTcpSession::do_read() {
                 rec->set_subject(std::get<0>(*it));
                 rec->set_predicate(std::get<1>(*it));
                 rec->set_object(std::get<2>(*it));
-            }                        
-            std::string resS = res.SerializeAsString();
-            do_write(resS);
+            }           
+
+            do_write(res);
         }
     });
 }
 
-void AsyncTcpSession::do_write(std::string res) {
+void AsyncTcpSession::do_write(QueryResponse res) {
     auto self(shared_from_this());
-    boost::asio::async_write(socket_, boost::asio::buffer(res.c_str(), (size_t)1024), [this, self](boost::system::error_code ec, std::size_t) {
+    boost::asio::streambuf b;
+    std::ostream os(&b);
+    res.SerializeToOstream(&os);    
+    boost::asio::async_write(socket_, b, [this, self](boost::system::error_code ec, std::size_t) {
+        socket_.close();
         if (!ec) {
             do_read();
         }

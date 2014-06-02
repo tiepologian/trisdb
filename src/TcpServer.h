@@ -47,7 +47,7 @@ public:
 private:
     TrisDb* _db;
     void do_read();
-    void do_write(std::string res);
+    void do_write(QueryResponse res);
     boost::asio::ip::tcp::socket socket_;
     enum {
         max_length = 1024
