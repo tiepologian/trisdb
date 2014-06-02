@@ -50,7 +50,6 @@ Utils::ResultVector TrisDb::getFromC(std::string c) {
 }
 
 Utils::ResultVector TrisDb::get(int index, std::string c) {
-    boost::shared_lock<boost::shared_mutex> lock(_mutex);
     switch(index){
         case 0:
             return getFromA(c);
