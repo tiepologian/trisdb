@@ -25,26 +25,32 @@ void TrisDb::addServer(GenericServer* g) {
 }
 
 void TrisDb::create(std::string a, std::string b, std::string c) {
+    boost::lock_guard<boost::shared_mutex> lock(_mutex);
     dbData.add(a, b, c);
 }
 
 bool TrisDb::remove(std::string a, std::string b, std::string c) {
+    boost::lock_guard<boost::shared_mutex> lock(_mutex);
     return dbData.remove(a, b, c);
 }
 
 Utils::ResultVector TrisDb::getFromA(std::string a) {
+    boost::shared_lock<boost::shared_mutex> lock(_mutex);
     return dbData.getA(a);
 }
 
 Utils::ResultVector TrisDb::getFromB(std::string b) {
+    boost::shared_lock<boost::shared_mutex> lock(_mutex);
     return dbData.getB(b);
 }
 
 Utils::ResultVector TrisDb::getFromC(std::string c) {
+    boost::shared_lock<boost::shared_mutex> lock(_mutex);
     return dbData.getC(c);
 }
 
 Utils::ResultVector TrisDb::get(int index, std::string c) {
+    boost::shared_lock<boost::shared_mutex> lock(_mutex);
     switch(index){
         case 0:
             return getFromA(c);
@@ -56,10 +62,12 @@ Utils::ResultVector TrisDb::get(int index, std::string c) {
 }
 
 Utils::ResultVector TrisDb::getAll() {
+    boost::shared_lock<boost::shared_mutex> lock(_mutex);
     return dbData.getAll();
 }
 
 void TrisDb::clearAll() {
+    boost::lock_guard<boost::shared_mutex> lock(_mutex);
     dbData.clearAll();
 }
 

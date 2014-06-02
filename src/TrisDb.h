@@ -9,6 +9,7 @@
 #define	TRISDB_H
 
 #include <thread>
+#include <boost/thread/shared_mutex.hpp>
 #include <signal.h>
 #include "TripleMap.h"
 #include "Config.h"
@@ -39,6 +40,7 @@ private:
     QueryPlanner* _planner;
     std::vector<GenericServer*> _servers;
     static volatile sig_atomic_t _terminateLoop;
+    boost::shared_mutex _mutex;
 };
 
 #endif	/* TRISDB_H */

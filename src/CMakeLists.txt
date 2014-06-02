@@ -5,7 +5,7 @@ add_executable(trisdb Config.cpp LogManager.cpp main.cpp message.pb.h param_t.h 
 
 set(EXECUTABLE_OUTPUT_PATH ../dist/)
 set(CMAKE_CXX_FLAGS "-O3 -DUSE_BOOST_KARMA")
-target_link_libraries(trisdb readline protobuf pthread boost_system)
+target_link_libraries(trisdb readline protobuf pthread boost_system boost_thread)
 
 install(TARGETS trisdb DESTINATION /usr/local/bin/)
 install (FILES ../utils/trisdb-init.conf DESTINATION /etc/init/ RENAME trisdb.conf)
