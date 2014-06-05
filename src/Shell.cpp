@@ -20,7 +20,8 @@ Shell::~Shell() {
 }
 
 void Shell::run() {
-    if(TcpClient::checkConnection()) LogManager::getSingleton()->log(LogManager::LINFO, "Shell ready");
+    TcpClient* client = new TcpClient();
+    LogManager::getSingleton()->log(LogManager::LINFO, "Shell ready");
     std::cout << std::endl;
 #ifdef __linux__
     char *buf;
@@ -28,12 +29,11 @@ void Shell::run() {
     while ((buf = readline(">> ")) != NULL) {
         std::string input(buf);
         try {
-            if (input != "") {                
-                if(boost::to_upper_copy(input) == "QUIT") break;
+            if (input != "") {
+                if (boost::to_upper_copy(input) == "QUIT") break;
                 QueryRequest req;
                 req.set_query(input);
                 req.set_timestamp(std::to_string(TimeUtils::getCurrentTimestamp()));
-                TcpClient *client = new TcpClient();
                 printQueryResult(client->connect(req), boost::to_upper_copy(input.substr(0, input.find(" "))));
             }
         } catch (Utils::CustomException& e) {
@@ -50,20 +50,20 @@ void Shell::run() {
         std::string input;
         std::getline(std::cin, input);
         try {
-            if (input != "") { 
-                if(boost::to_upper_copy(input) == "QUIT") break;
+            if (input != "") {
+                if (boost::to_upper_copy(input) == "QUIT") break;
                 QueryRequest req;
                 req.set_query(input);
                 req.set_timestamp(std::to_string(TimeUtils::getCurrentTimestamp()));
-                TcpClient *client = new TcpClient();
                 printQueryResult(client->connect(req), boost::to_upper_copy(input.substr(0, input.find(" "))));
             }
         } catch (Utils::CustomException& e) {
-            //LogManager::getSingleton()->log(LogManager::ERROR, e.what());
+            LogManager::getSingleton()->log(LogManager::ERROR, e.what());
         }
     }
 #endif
     // if exited loop, shutdown
+    delete client;
     quit();
 }
 
@@ -83,7 +83,7 @@ void Shell::printQueryResult(QueryResponse res, std::string cmd) {
         tp.AddColumn("Object", 20);
     }
     if (cmd.substr(0, 2) == "GE") tp.PrintHeader();
-    for(int i=0;i<res.data_size();i++) {
+    for (int i = 0; i < res.data_size(); i++) {
         if (cmd == "GETS") tp << res.data(i).subject();
         else if (cmd == "GETP") tp << res.data(i).predicate();
         else if (cmd == "GETO") tp << res.data(i).object();

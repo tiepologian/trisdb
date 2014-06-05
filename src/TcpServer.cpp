@@ -100,7 +100,7 @@ void AsyncTcpSession::do_write(QueryResponse res) {
     std::ostream os(&b);
     res.SerializeToOstream(&os);    
     boost::asio::async_write(socket_, b, [this, self](boost::system::error_code ec, std::size_t) {
-        socket_.close();
+        //socket_.close();
         if (!ec) {
             do_read();
         }

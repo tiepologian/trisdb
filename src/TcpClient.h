@@ -15,12 +15,11 @@
 class TcpClient {
 public:
     TcpClient();
-    TcpClient(const TcpClient& orig);
     virtual ~TcpClient();
     QueryResponse connect(QueryRequest req);
-    static bool checkConnection();
 private:
     int max_length = 1024;    
+    std::shared_ptr<boost::asio::ip::tcp::socket> _s;
 };
 
 #endif	/* TCPCLIENT_H */
