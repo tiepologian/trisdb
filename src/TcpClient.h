@@ -9,14 +9,20 @@
 #define	TCPCLIENT_H
 
 #include <boost/asio.hpp>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include "message.pb.h"
 #include "Utils.h"
+#include "PackedMessage.h"
 
 class TcpClient {
 public:
     TcpClient();
     virtual ~TcpClient();
     QueryResponse connect(QueryRequest req);
+    typedef boost::shared_ptr<QueryRequest> RequestPointer;
+    typedef boost::shared_ptr<QueryResponse> ResponsePointer;
 private:
     int max_length = 1024;    
     std::shared_ptr<boost::asio::ip::tcp::socket> _s;

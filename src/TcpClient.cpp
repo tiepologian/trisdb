@@ -30,19 +30,30 @@ TcpClient::~TcpClient() {
 
 QueryResponse TcpClient::connect(QueryRequest req) {
     try {
-        boost::asio::streambuf b;
-        std::ostream os(&b);
-        req.SerializeToOstream(&os);
-        boost::asio::write(*_s, b);
+        std::vector<google::protobuf::uint8> writebuf;
+        RequestPointer resp(new QueryRequest);
+        resp->set_timestamp(req.timestamp());
+        resp->set_query(req.query());
 
-        char reply[1024];
+        PackedMessage<QueryRequest> resp_msg(resp);
+        resp_msg.pack(writebuf);
+        boost::asio::write(*_s, boost::asio::buffer(writebuf));
+
         boost::system::error_code error;
+        std::vector<uint8_t> m_readbuf;
+        ResponsePointer resp2 = boost::make_shared<QueryResponse>();
+        PackedMessage<QueryResponse> res_msg(resp2);
 
-        size_t length = _s->read_some(boost::asio::buffer(reply), error);
-
-        QueryResponse res;
-        res.ParseFromString(reply);
-        return res;
+        m_readbuf.resize(HEADER_SIZE);
+        boost::asio::read(*_s, boost::asio::buffer(m_readbuf), boost::asio::transfer_exactly(HEADER_SIZE), error);
+        unsigned msg_len = res_msg.decode_header(m_readbuf);
+        m_readbuf.resize(HEADER_SIZE + msg_len);
+        boost::asio::mutable_buffers_1 buf = boost::asio::buffer(&m_readbuf[HEADER_SIZE], msg_len);
+        boost::asio::read(*_s, buf, boost::asio::transfer_exactly(HEADER_SIZE + msg_len), error);
+        if (res_msg.unpack(m_readbuf)) {
+            ResponsePointer res = res_msg.get_msg();
+            return *res;
+        }
     } catch (std::exception& e) {
         std::cout << e.what() << std::endl;
     }
