@@ -30,6 +30,7 @@ public:
     Utils::ResultVector getFromC(std::string c);
     Utils::ResultVector get(int index, std::string c);
     Utils::ResultVector getAll();
+    Utils::ResultVector count();
     void clearAll();
     QueryParser* getParser();
     QueryPlanner* getPlanner();

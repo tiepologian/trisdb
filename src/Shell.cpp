@@ -58,13 +58,14 @@ void Shell::run() {
                 printQueryResult(client->connect(req), boost::to_upper_copy(input.substr(0, input.find(" "))));
             }
         } catch (Utils::CustomException& e) {
-            LogManager::getSingleton()->log(LogManager::ERROR, e.what());
+            LogManager::getSingleton()->log(LogManager::LERROR, e.what());
         }
     }
 #endif
     // if exited loop, shutdown
-    delete client;
     quit();
+    exit(0);
+    delete client;    
 }
 
 void Shell::quit() {
@@ -82,14 +83,16 @@ void Shell::printQueryResult(QueryResponse res, std::string cmd) {
         tp.AddColumn("Predicate", 20);
         tp.AddColumn("Object", 20);
     }
-    if (cmd.substr(0, 2) == "GE") tp.PrintHeader();
+    else if(cmd == "COUNT") tp.AddColumn("Count", 20);
+    if ((cmd.substr(0, 2) == "GE") || (cmd == "COUNT")) tp.PrintHeader();
     for (int i = 0; i < res.data_size(); i++) {
         if (cmd == "GETS") tp << res.data(i).subject();
         else if (cmd == "GETP") tp << res.data(i).predicate();
         else if (cmd == "GETO") tp << res.data(i).object();
         else if (cmd == "GET") tp << res.data(i).subject() << res.data(i).predicate() << res.data(i).object();
+        else if(cmd == "COUNT") std::cout << res.data(i).object() << std::endl;
     }
-    if (cmd.substr(0, 2) == "GE") tp.PrintFooter();
+    if ((cmd.substr(0, 2) == "GE") || (cmd == "COUNT")) tp.PrintFooter();
     //double now = TimeUtils::getCurrentTimestamp();
     int queryTime = atoi(res.timestamp().c_str());
     if (queryTime == 0) queryTime = 1;

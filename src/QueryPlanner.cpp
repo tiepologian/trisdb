@@ -48,7 +48,9 @@ Utils::ResultVector QueryPlanner::execute(QueryParser::Query q) {
         exit(0);
     } else if (q.command == "CLEAR") {
         this->_parent->clearAll();
-    }
+    } else if(q.command == "COUNT") {
+        result = this->_parent->count();
+    }    
     return result;
 }
 

@@ -65,6 +65,11 @@ Utils::ResultVector TrisDb::getAll() {
     return dbData.getAll();
 }
 
+Utils::ResultVector TrisDb::count() {
+    boost::shared_lock<boost::shared_mutex> lock(_mutex);
+    return dbData.getCount();
+}
+
 void TrisDb::clearAll() {
     boost::lock_guard<boost::shared_mutex> lock(_mutex);
     dbData.clearAll();

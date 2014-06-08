@@ -51,7 +51,7 @@ namespace Utils {
     typedef std::vector<record> ResultVector;
     static const std::string kQueryWildcard = "***";
 
-    static const std::unordered_set<std::string> ValidCommands{"CREATE", "GET", "GETS", "GETP", "GETO", "DELETE", "CLEAR", "QUIT"};
+    static const std::unordered_set<std::string> ValidCommands{"CREATE", "GET", "GETS", "GETP", "GETO", "DELETE", "CLEAR", "COUNT", "QUIT"};
 
     template<typename T>
     std::string toString(T t) {

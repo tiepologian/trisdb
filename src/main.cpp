@@ -35,12 +35,10 @@ int main(int argc, char *argv[]) {
 
     try {
         params.parseCommandLine(argc, argv);
-        init(params);
-        // init saves settings in config, now call run() passing settings)
-        // If server starts, start TCP server
+        init(params);       
         run();
     } catch (std::exception& e) {
-        //LogManager::getSingleton()->log(LogManager::ERROR, e.what());
+        LogManager::getSingleton()->log(LogManager::LERROR, e.what());
         return 1;
     }
 
@@ -57,7 +55,6 @@ void init(param_t params) {
         params.printHelp();
         exit(0);
     } else if (params.getBoolFlag("--shell") || params.getBoolFlag("-s")) {
-        //db = new TrisDb(conf);
         shell();
     }
     // If no version, help or shell, read settings from file or use defaults and save in config var

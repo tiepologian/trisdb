@@ -29,7 +29,7 @@ QueryParser::Query QueryParser::parse(std::string s) {
     Utils::CustomException ex;
     if(Utils::ValidCommands.find(q.command) == Utils::ValidCommands.end()) throw ex;
 
-    if (q.command == "QUIT" || q.command == "CLEAR") return q;
+    if (q.command == "QUIT" || q.command == "CLEAR" || q.command == "COUNT") return q;
 
     std::vector<std::string>params;
 

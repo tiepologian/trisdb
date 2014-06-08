@@ -100,6 +100,12 @@ public:
 
         return result;
     }
+    
+    Utils::ResultVector getCount() {
+        Utils::ResultVector result;
+        result.push_back(std::make_tuple("count", "is", std::to_string(m1.size())));
+        return result;
+    }
 
     void clearAll() {
         m1.clear();
