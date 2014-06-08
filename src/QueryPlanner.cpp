@@ -50,7 +50,9 @@ Utils::ResultVector QueryPlanner::execute(QueryParser::Query q) {
         this->_parent->clearAll();
     } else if(q.command == "COUNT") {
         result = this->_parent->count();
-    }    
+    } else if(q.command == "STATUS") {
+        result = this->_parent->status();
+    } 
     return result;
 }
 

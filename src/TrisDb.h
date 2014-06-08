@@ -31,6 +31,7 @@ public:
     Utils::ResultVector get(int index, std::string c);
     Utils::ResultVector getAll();
     Utils::ResultVector count();
+    Utils::ResultVector status();
     void clearAll();
     QueryParser* getParser();
     QueryPlanner* getPlanner();

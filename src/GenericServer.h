@@ -16,6 +16,7 @@ public:
     virtual ~GenericServer() {};
     virtual void run() = 0;
     virtual void stop() = 0;
+    virtual int getOpenConnections() = 0;
     virtual std::string getServerName() {
         return _serverName;
     }

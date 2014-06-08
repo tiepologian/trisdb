@@ -19,6 +19,7 @@
 #include "GenericServer.h"
 #include "PackedMessage.h"
 #include <cstdlib>
+#include <atomic>
 #include <memory>
 
 class TcpServer : public GenericServer {
@@ -28,6 +29,8 @@ public:
     virtual ~TcpServer();
     virtual void run();
     virtual void stop();
+    virtual int getOpenConnections();
+    std::atomic<int> cnx = ATOMIC_VAR_INIT(0);
 private:
     TrisDb* _db;
     boost::asio::io_service io_service;
@@ -36,22 +39,25 @@ private:
 
 class AsyncTcpServer {
 public:
-    AsyncTcpServer(boost::asio::io_service& io_service, short port, TrisDb *tris);
+    AsyncTcpServer(boost::asio::io_service& io_service, short port, TrisDb* tris, TcpServer* srv);
 private:
     void do_accept();
     boost::asio::ip::tcp::acceptor acceptor_;
     boost::asio::ip::tcp::socket socket_;
     TrisDb* _db;
+    TcpServer* _srv;
 };
 
 class AsyncTcpSession : public std::enable_shared_from_this<AsyncTcpSession> {
 public:
-    AsyncTcpSession(boost::asio::ip::tcp::socket socket, TrisDb* tris);
+    AsyncTcpSession(boost::asio::ip::tcp::socket socket, TrisDb* tris, TcpServer* srv);
+    virtual ~AsyncTcpSession();
     void start();
     typedef boost::shared_ptr<QueryRequest> RequestPointer;
     typedef boost::shared_ptr<QueryResponse> ResponsePointer;
 private:
     TrisDb* _db;
+    TcpServer* _srv;
     void do_read();
     void do_write(ResponsePointer res);
     void parseMessage(unsigned size);

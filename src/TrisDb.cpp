@@ -70,6 +70,23 @@ Utils::ResultVector TrisDb::count() {
     return dbData.getCount();
 }
 
+Utils::ResultVector TrisDb::status() {
+    boost::shared_lock<boost::shared_mutex> lock(_mutex);
+    Utils::ResultVector result;
+    auto tmp = dbData.getCount();
+    result.push_back(tmp.at(0));
+    double vm, rss;
+    Utils::process_mem_usage(vm, rss);
+    rss /= 1024.0;
+    result.push_back(std::make_tuple("memory", "value", std::to_string(rss) + " MB"));
+    int connections = 0;
+    for(auto &i : this->_servers) {
+        connections += i->getOpenConnections();
+    }
+    result.push_back(std::make_tuple("connections", "value", std::to_string(connections)));
+    return result;
+}
+
 void TrisDb::clearAll() {
     boost::lock_guard<boost::shared_mutex> lock(_mutex);
     dbData.clearAll();

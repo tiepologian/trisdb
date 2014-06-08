@@ -26,9 +26,13 @@ TcpServer::~TcpServer() {
 
 void TcpServer::server() {
     LogManager::getSingleton()->log(LogManager::LINFO, "Listening for TCP connections on port 1205");
-    AsyncTcpServer s(io_service, 1205, this->_db);
+    AsyncTcpServer s(io_service, 1205, this->_db, this);
     // 2nd thread blocks here
     io_service.run();
+}
+
+int TcpServer::getOpenConnections() {
+    return cnx;
 }
 
 void TcpServer::run() {
@@ -46,22 +50,29 @@ void TcpServer::stop() {
     io_service.stop();
 }
 
-AsyncTcpServer::AsyncTcpServer(boost::asio::io_service& io_service, short port, TrisDb* tris) : acceptor_(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), socket_(io_service) {
+AsyncTcpServer::AsyncTcpServer(boost::asio::io_service& io_service, short port, TrisDb* tris, TcpServer* srv) : acceptor_(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), socket_(io_service) {
     do_accept();
     this->_db = tris;
+    this->_srv = srv;
 }
 
 void AsyncTcpServer::do_accept() {
     acceptor_.async_accept(socket_, [this](boost::system::error_code ec) {
         if (!ec) {
-            std::make_shared<AsyncTcpSession>(std::move(socket_), this->_db)->start();
+            std::make_shared<AsyncTcpSession>(std::move(socket_), this->_db, this->_srv)->start();
         }
         do_accept();
     });
 }
 
-AsyncTcpSession::AsyncTcpSession(boost::asio::ip::tcp::socket socket, TrisDb* tris) : socket_(std::move(socket)), m_packed_request(boost::shared_ptr<QueryRequest>(new QueryRequest())) {
+AsyncTcpSession::AsyncTcpSession(boost::asio::ip::tcp::socket socket, TrisDb* tris, TcpServer* srv) : socket_(std::move(socket)), m_packed_request(boost::shared_ptr<QueryRequest>(new QueryRequest())) {
     this->_db = tris;
+    this->_srv = srv;    
+    this->_srv->cnx.fetch_add(1);
+}
+
+AsyncTcpSession::~AsyncTcpSession() {
+    this->_srv->cnx.fetch_sub(1);
 }
 
 void AsyncTcpSession::start() {

@@ -65,7 +65,7 @@ void Shell::run() {
     // if exited loop, shutdown
     quit();
     exit(0);
-    delete client;    
+    delete client;
 }
 
 void Shell::quit() {
@@ -82,17 +82,21 @@ void Shell::printQueryResult(QueryResponse res, std::string cmd) {
         tp.AddColumn("Subject", 20);
         tp.AddColumn("Predicate", 20);
         tp.AddColumn("Object", 20);
+    } else if (cmd == "COUNT") tp.AddColumn("Count", 20);
+    else if (cmd == "STATUS") {
+        tp.AddColumn("Property", 20);
+        tp.AddColumn("Value", 20);
     }
-    else if(cmd == "COUNT") tp.AddColumn("Count", 20);
-    if ((cmd.substr(0, 2) == "GE") || (cmd == "COUNT")) tp.PrintHeader();
+    if ((cmd.substr(0, 2) == "GE") || (cmd == "COUNT") || (cmd == "STATUS")) tp.PrintHeader();
     for (int i = 0; i < res.data_size(); i++) {
         if (cmd == "GETS") tp << res.data(i).subject();
         else if (cmd == "GETP") tp << res.data(i).predicate();
         else if (cmd == "GETO") tp << res.data(i).object();
         else if (cmd == "GET") tp << res.data(i).subject() << res.data(i).predicate() << res.data(i).object();
-        else if(cmd == "COUNT") std::cout << res.data(i).object() << std::endl;
+        else if (cmd == "COUNT") tp << res.data(i).object();
+        else if (cmd == "STATUS") tp << res.data(i).subject() << res.data(i).object();
     }
-    if ((cmd.substr(0, 2) == "GE") || (cmd == "COUNT")) tp.PrintFooter();
+    if ((cmd.substr(0, 2) == "GE") || (cmd == "COUNT") || (cmd == "STATUS")) tp.PrintFooter();
     //double now = TimeUtils::getCurrentTimestamp();
     int queryTime = atoi(res.timestamp().c_str());
     if (queryTime == 0) queryTime = 1;
