@@ -67,7 +67,7 @@ void AsyncTcpServer::do_accept() {
 
 AsyncTcpSession::AsyncTcpSession(boost::asio::ip::tcp::socket socket, TrisDb* tris, TcpServer* srv) : socket_(std::move(socket)), m_packed_request(boost::shared_ptr<QueryRequest>(new QueryRequest())) {
     this->_db = tris;
-    this->_srv = srv;    
+    this->_srv = srv;
     this->_srv->cnx.fetch_add(1);
 }
 
@@ -123,32 +123,14 @@ void AsyncTcpSession::handle_read_body(const boost::system::error_code& error) {
             std::vector<google::protobuf::uint8> writebuf;
             PackedMessage<QueryResponse> resp_msg(resp);
             resp_msg.pack(writebuf);
-            // TODO: Write should be async
-            boost::asio::write(socket_, boost::asio::buffer(writebuf));
-            do_read();
-
-        } 
+            auto self(shared_from_this());
+            boost::asio::async_write(socket_, boost::asio::buffer(writebuf),
+                    [this, self](boost::system::error_code ec, std::size_t length) {
+                        if (!ec) {
+                            do_read();
+                        }
+                    }
+            );
+        }
     }
-}
-
-void AsyncTcpSession::do_write(ResponsePointer res) {
-    /*std::vector<google::protobuf::uint8> writebuf;
-    PackedMessage<QueryResponse> resp_msg(res);
-    resp_msg.pack(writebuf);
-    boost::asio::write(socket_, boost::asio::buffer(writebuf));
-    do_read();*/
-
-    //boost::asio::write(*_s, boost::asio::buffer(writebuf));
-
-    //auto self(shared_from_this());
-    //boost::asio::streambuf b;
-    //std::ostream os(&b);
-    //res.SerializeToOstream(&os);   
-
-    /* boost::asio::async_write(socket_, boost::asio::buffer(writebuf)), [this, self](boost::system::error_code ec, std::size_t) {
-         //socket_.close();
-         if (!ec) {
-             do_read();
-         }
-     });*/
 }

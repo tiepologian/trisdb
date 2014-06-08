@@ -59,7 +59,6 @@ private:
     TrisDb* _db;
     TcpServer* _srv;
     void do_read();
-    void do_write(ResponsePointer res);
     void parseMessage(unsigned size);
     void handle_read_header(const boost::system::error_code& error);
     void handle_read_body(const boost::system::error_code& error);
