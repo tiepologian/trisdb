@@ -28,7 +28,7 @@ TcpClient::~TcpClient() {
     _s.reset();
 }
 
-QueryResponse TcpClient::connect(QueryRequest req) {
+QueryResponse TcpClient::connect(const QueryRequest& req) {
     try {
         std::vector<google::protobuf::uint8> writebuf;
         RequestPointer resp(new QueryRequest);

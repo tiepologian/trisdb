@@ -19,8 +19,7 @@ QueryParser::~QueryParser() {
     //
 }
 
-QueryParser::Query QueryParser::parse(std::string s) {
-    Query q;
+void QueryParser::parse(std::string s, Query& q) {    
     q.timestamp = TimeUtils::getCurrentTimestamp();
     unsigned pos = s.find(" ");
     q.command = boost::to_upper_copy(s.substr(0, pos));
@@ -29,7 +28,7 @@ QueryParser::Query QueryParser::parse(std::string s) {
     Utils::CustomException ex;
     if(Utils::ValidCommands.find(q.command) == Utils::ValidCommands.end()) throw ex;
 
-    if (q.command == "QUIT" || q.command == "CLEAR" || q.command == "COUNT" || q.command == "STATUS") return q;
+    if (q.command == "QUIT" || q.command == "CLEAR" || q.command == "COUNT" || q.command == "STATUS") return;
 
     std::vector<std::string>params;
 
@@ -46,11 +45,11 @@ QueryParser::Query QueryParser::parse(std::string s) {
         if(q.command == "CREATE") throw ex;
         // only first value in get, assume wildcards for other two
         else q.parameters = std::make_tuple(params.at(0), Utils::kQueryWildcard, Utils::kQueryWildcard);
-        return q;
+        return;
     }
         
     q.parameters = std::make_tuple(params.at(0), params.at(1), params.at(2));
-    return q;
+    return;
 }
 
 std::ostream& operator <<(std::ostream &o, const QueryParser::Query &a) {

@@ -23,7 +23,7 @@ public:
         Utils::record parameters;
     };
     // Receives string command, parses it and returns Query object
-    Query parse(std::string s);
+    void parse(std::string s, Query& q);
     //std::ostream& operator << (std::ostream &o, const Query &a);
     friend std::ostream& operator << (std::ostream &o, const Query &a);
 private:

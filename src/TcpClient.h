@@ -20,7 +20,7 @@ class TcpClient {
 public:
     TcpClient();
     virtual ~TcpClient();
-    QueryResponse connect(QueryRequest req);
+    QueryResponse connect(const QueryRequest& req);
     typedef boost::shared_ptr<QueryRequest> RequestPointer;
     typedef boost::shared_ptr<QueryResponse> ResponsePointer;
 private:
