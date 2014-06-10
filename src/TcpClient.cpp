@@ -28,13 +28,9 @@ TcpClient::~TcpClient() {
     _s.reset();
 }
 
-QueryResponse TcpClient::connect(const QueryRequest& req) {
+QueryResponse TcpClient::connect(RequestPointer resp) {
     try {
         std::vector<google::protobuf::uint8> writebuf;
-        RequestPointer resp(new QueryRequest);
-        resp->set_timestamp(req.timestamp());
-        resp->set_query(req.query());
-
         PackedMessage<QueryRequest> resp_msg(resp);
         resp_msg.pack(writebuf);
         boost::asio::write(*_s, boost::asio::buffer(writebuf));

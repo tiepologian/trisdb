@@ -24,6 +24,7 @@ public:
     Shell(const Shell& orig);
     virtual ~Shell();
     void run();
+    typedef boost::shared_ptr<QueryRequest> RequestPointer;
 private:
     void quit();
     void printQueryResult(QueryResponse res, std::string cmd);

@@ -107,9 +107,13 @@ void AsyncTcpSession::handle_read_body(const boost::system::error_code& error) {
     if (!error) {
         if (m_packed_request.unpack(m_readbuf)) {
             RequestPointer req = m_packed_request.get_msg();
+
             QueryParser::Query q;
-            this->_db->getParser()->parse(req->query(), q);
-            Utils::ResultVector result = this->_db->getPlanner()->execute(q);
+            Utils::ResultVector result;
+            for (int i = 0; i < req->query_size(); i++) {                
+                this->_db->getParser()->parse(req->query(i), q);
+                result = this->_db->getPlanner()->execute(q);
+            }
 
             ResponsePointer resp = boost::make_shared<QueryResponse>();
             double queryTime = TimeUtils::getCurrentTimestamp() - q.timestamp;

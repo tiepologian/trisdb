@@ -125,7 +125,7 @@ void protobuf_AddDesc_message_2eproto() {
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\rmessage.proto\"0\n\014QueryRequest\022\r\n\005query"
-    "\030\001 \002(\t\022\021\n\ttimestamp\030\002 \001(\t\"\205\001\n\rQueryRespo"
+    "\030\001 \003(\t\022\021\n\ttimestamp\030\002 \001(\t\"\205\001\n\rQueryRespo"
     "nse\022#\n\004data\030\001 \003(\0132\025.QueryResponse.Record"
     "\022\021\n\ttimestamp\030\002 \001(\t\032<\n\006Record\022\017\n\007subject"
     "\030\001 \002(\t\022\021\n\tpredicate\030\002 \002(\t\022\016\n\006object\030\003 \002("
@@ -171,7 +171,6 @@ QueryRequest::QueryRequest(const QueryRequest& from)
 
 void QueryRequest::SharedCtor() {
   _cached_size_ = 0;
-  query_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   timestamp_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -181,9 +180,6 @@ QueryRequest::~QueryRequest() {
 }
 
 void QueryRequest::SharedDtor() {
-  if (query_ != &::google::protobuf::internal::kEmptyString) {
-    delete query_;
-  }
   if (timestamp_ != &::google::protobuf::internal::kEmptyString) {
     delete timestamp_;
   }
@@ -213,18 +209,14 @@ QueryRequest* QueryRequest::New() const {
 }
 
 void QueryRequest::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (has_query()) {
-      if (query_ != &::google::protobuf::internal::kEmptyString) {
-        query_->clear();
-      }
-    }
+  if (_has_bits_[1 / 32] & (0xffu << (1 % 32))) {
     if (has_timestamp()) {
       if (timestamp_ != &::google::protobuf::internal::kEmptyString) {
         timestamp_->clear();
       }
     }
   }
+  query_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -235,18 +227,21 @@ bool QueryRequest::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required string query = 1;
+      // repeated string query = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_query:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_query()));
+                input, this->add_query()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->query().data(), this->query().length(),
+            this->query(this->query_size() - 1).data(),
+            this->query(this->query_size() - 1).length(),
             ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(10)) goto parse_query;
         if (input->ExpectTag(18)) goto parse_timestamp;
         break;
       }
@@ -286,13 +281,13 @@ bool QueryRequest::MergePartialFromCodedStream(
 
 void QueryRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required string query = 1;
-  if (has_query()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->query().data(), this->query().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+  // repeated string query = 1;
+  for (int i = 0; i < this->query_size(); i++) {
+  ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    this->query(i).data(), this->query(i).length(),
+    ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->query(), output);
+      1, this->query(i), output);
   }
 
   // optional string timestamp = 2;
@@ -312,14 +307,13 @@ void QueryRequest::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* QueryRequest::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required string query = 1;
-  if (has_query()) {
+  // repeated string query = 1;
+  for (int i = 0; i < this->query_size(); i++) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->query().data(), this->query().length(),
+      this->query(i).data(), this->query(i).length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->query(), target);
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteStringToArray(1, this->query(i), target);
   }
 
   // optional string timestamp = 2;
@@ -342,14 +336,7 @@ void QueryRequest::SerializeWithCachedSizes(
 int QueryRequest::ByteSize() const {
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required string query = 1;
-    if (has_query()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->query());
-    }
-
+  if (_has_bits_[1 / 32] & (0xffu << (1 % 32))) {
     // optional string timestamp = 2;
     if (has_timestamp()) {
       total_size += 1 +
@@ -358,6 +345,13 @@ int QueryRequest::ByteSize() const {
     }
 
   }
+  // repeated string query = 1;
+  total_size += 1 * this->query_size();
+  for (int i = 0; i < this->query_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->query(i));
+  }
+
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -383,10 +377,8 @@ void QueryRequest::MergeFrom(const ::google::protobuf::Message& from) {
 
 void QueryRequest::MergeFrom(const QueryRequest& from) {
   GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_query()) {
-      set_query(from.query());
-    }
+  query_.MergeFrom(from.query_);
+  if (from._has_bits_[1 / 32] & (0xffu << (1 % 32))) {
     if (from.has_timestamp()) {
       set_timestamp(from.timestamp());
     }
@@ -407,14 +399,13 @@ void QueryRequest::CopyFrom(const QueryRequest& from) {
 }
 
 bool QueryRequest::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
 
   return true;
 }
 
 void QueryRequest::Swap(QueryRequest* other) {
   if (other != this) {
-    std::swap(query_, other->query_);
+    query_.Swap(&other->query_);
     std::swap(timestamp_, other->timestamp_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
