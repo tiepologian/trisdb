@@ -19,11 +19,11 @@ QueryParser::~QueryParser() {
     //
 }
 
-void QueryParser::parse(std::string s, Query& q) {    
+void QueryParser::parse(std::string s, Query& q) {
     q.timestamp = TimeUtils::getCurrentTimestamp();
     unsigned pos = s.find(" ");
     q.command = boost::to_upper_copy(s.substr(0, pos));
-    
+
     // is the command valid?
     Utils::CustomException ex;
     if(Utils::ValidCommands.find(q.command) == Utils::ValidCommands.end()) throw ex;
@@ -47,7 +47,7 @@ void QueryParser::parse(std::string s, Query& q) {
         else q.parameters = std::make_tuple(params.at(0), Utils::kQueryWildcard, Utils::kQueryWildcard);
         return;
     }
-        
+
     q.parameters = std::make_tuple(params.at(0), params.at(1), params.at(2));
     return;
 }

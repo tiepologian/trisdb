@@ -110,9 +110,11 @@ void AsyncTcpSession::handle_read_body(const boost::system::error_code& error) {
 
             QueryParser::Query q;
             Utils::ResultVector result;
-            for (int i = 0; i < req->query_size(); i++) {                
-                this->_db->getParser()->parse(req->query(i), q);
-                result = this->_db->getPlanner()->execute(q);
+            QueryParser* parser = this->_db->getParser();
+            QueryPlanner* planner = this->_db->getPlanner();
+            for (int i = 0; i < req->query_size(); i++) {
+                parser->parse(req->query(i), q);
+                result = planner->execute(q);
             }
 
             ResponsePointer resp = boost::make_shared<QueryResponse>();
