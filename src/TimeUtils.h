@@ -17,6 +17,7 @@ class TimeUtils {
 public:
     TimeUtils();
     static double getCurrentTimestamp();
+    static double getCurrentMicroseconds();
     static std::string getTimeString();
     static std::string getCustomTimeString();
 };

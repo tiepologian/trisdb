@@ -112,11 +112,10 @@ void AsyncTcpSession::handle_read_body(const boost::system::error_code& error) {
             Utils::ResultVector result;
             QueryParser* parser = this->_db->getParser();
             QueryPlanner* planner = this->_db->getPlanner();
-            for (int i = 0; i < req->query_size(); i++) {
-                parser->parse(req->query(i), q);
-                result = planner->execute(q);
-            }
-
+            for (int i = 0; i < req->query_size(); i++) {                
+                parser->parse(req->query(i), q);         
+                result = planner->execute(q);               
+            }           
             ResponsePointer resp = boost::make_shared<QueryResponse>();
             double queryTime = TimeUtils::getCurrentTimestamp() - q.timestamp;
             resp->set_timestamp(std::to_string(queryTime));

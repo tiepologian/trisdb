@@ -17,6 +17,13 @@ double TimeUtils::getCurrentTimestamp() {
     return std::chrono::duration_cast<milliseconds>(ms).count();
 }
 
+double TimeUtils::getCurrentMicroseconds() {
+    microseconds ms = duration_cast< microseconds >(
+            high_resolution_clock::now().time_since_epoch()
+            );
+    return std::chrono::duration_cast<microseconds>(ms).count();
+}
+
 std::string TimeUtils::getTimeString() {
     std::time_t tt = system_clock::to_time_t (system_clock::now());
     std::string tmp = std::asctime(localtime(&tt));
