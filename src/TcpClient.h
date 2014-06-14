@@ -24,7 +24,6 @@ public:
     typedef boost::shared_ptr<QueryResponse> ResponsePointer;
     QueryResponse connect(RequestPointer resp);
 private:
-    int max_length = 1024;    
     std::shared_ptr<boost::asio::ip::tcp::socket> _s;
 };
 

@@ -1,108 +1,108 @@
-/*
- * File:   TcpServer.cpp
+/* 
+ * File:   UnixSocketServer.cpp
  * Author: tiepologian <tiepolo.gian@gmail.com>
- *
- * Created on 25 maggio 2014, 19.21
+ * 
+ * Created on 14 giugno 2014, 19.36
  */
 
-#include "TcpServer.h"
+#include "UnixSocketServer.h"
 #include "LogManager.h"
 
 using boost::asio::ip::tcp;
 
-TcpServer::TcpServer(TrisDb* db) {
+UnixSocketServer::UnixSocketServer(TrisDb* db) {
     this->_db = db;
-    this->_serverName = "Tcp Server";
+    this->_serverName = "Unix Domain Socket";
 }
 
-TcpServer::TcpServer(const TcpServer& orig) {
+UnixSocketServer::UnixSocketServer(const UnixSocketServer& orig) {
     //
 }
 
-TcpServer::~TcpServer() {
+UnixSocketServer::~UnixSocketServer() {
     //
 }
 
-void TcpServer::server() {
-    LogManager::getSingleton()->log(LogManager::LINFO, "Listening for TCP connections on port 1205");
-    AsyncTcpServer s(io_service, 1205, this->_db, this);
+void UnixSocketServer::server() {
+    LogManager::getSingleton()->log(LogManager::LINFO, "Listening for Unix Domain connections on /tmp/trisdb");
+    AsyncUnixSocketServer s(io_service, "/tmp/trisdb", this->_db, this);
     // 2nd thread blocks here
     io_service.run();
 }
 
-int TcpServer::getOpenConnections() {
+int UnixSocketServer::getOpenConnections() {
     return cnx;
 }
 
-void TcpServer::run() {
+void UnixSocketServer::run() {
     try {
         std::cout.sync_with_stdio(true);
-        std::thread(&TcpServer::server, this).detach();
+        std::thread(&UnixSocketServer::server, this).detach();
     } catch (std::exception& ex) {
         std::cerr << "Exception: " << ex.what() << "\n";
     }
 }
 
-void TcpServer::stop() {
-    LogManager::getSingleton()->log(LogManager::LINFO, "Stopping TCP Server");
+void UnixSocketServer::stop() {
+    LogManager::getSingleton()->log(LogManager::LINFO, "Stopping Unix Domain Socket");
     // stop io_service so 2nd thread terminates
     io_service.stop();
 }
 
-AsyncTcpServer::AsyncTcpServer(boost::asio::io_service& io_service, short port, TrisDb* tris, TcpServer* srv) : acceptor_(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), socket_(io_service) {
+AsyncUnixSocketServer::AsyncUnixSocketServer(boost::asio::io_service& io_service, std::string filename, TrisDb* tris, UnixSocketServer* srv) : acceptor_(io_service, boost::asio::local::stream_protocol::endpoint(filename)), socket_(io_service) {
     do_accept();
     this->_db = tris;
     this->_srv = srv;
 }
 
-void AsyncTcpServer::do_accept() {
+void AsyncUnixSocketServer::do_accept() {
     acceptor_.async_accept(socket_, [this](boost::system::error_code ec) {
         if (!ec) {
-            std::make_shared<AsyncTcpSession>(std::move(socket_), this->_db, this->_srv)->start();
+            std::make_shared<AsyncUnixSocketSession>(std::move(socket_), this->_db, this->_srv)->start();
         }
         do_accept();
     });
 }
 
-AsyncTcpSession::AsyncTcpSession(boost::asio::ip::tcp::socket socket, TrisDb* tris, TcpServer* srv) : socket_(std::move(socket)), m_packed_request(boost::shared_ptr<QueryRequest>(new QueryRequest())) {
+AsyncUnixSocketSession::AsyncUnixSocketSession(boost::asio::local::stream_protocol::socket socket, TrisDb* tris, UnixSocketServer* srv) : socket_(std::move(socket)), m_packed_request(boost::shared_ptr<QueryRequest>(new QueryRequest())) {
     this->_db = tris;
     this->_srv = srv;
     this->_srv->cnx.fetch_add(1);
 }
 
-AsyncTcpSession::~AsyncTcpSession() {
+AsyncUnixSocketSession::~AsyncUnixSocketSession() {
     this->_srv->cnx.fetch_sub(1);
 }
 
-void AsyncTcpSession::start() {
+void AsyncUnixSocketSession::start() {
     do_read();
 }
 
-void AsyncTcpSession::handle_read_header(const boost::system::error_code& error) {
+void AsyncUnixSocketSession::handle_read_header(const boost::system::error_code& error) {
     if (!error) {
         unsigned msg_len = m_packed_request.decode_header(m_readbuf);
         parseMessage(msg_len);
     }
 }
 
-void AsyncTcpSession::do_read() {
+void AsyncUnixSocketSession::do_read() {
     auto self(shared_from_this());
     // get message length from header
     m_readbuf.resize(HEADER_SIZE);
     boost::asio::async_read(socket_, boost::asio::buffer(m_readbuf),
-            boost::bind(&AsyncTcpSession::handle_read_header, shared_from_this(),
+            boost::bind(&AsyncUnixSocketSession::handle_read_header, shared_from_this(),
             boost::asio::placeholders::error));
 }
 
-void AsyncTcpSession::parseMessage(unsigned msg_len) {
+void AsyncUnixSocketSession::parseMessage(unsigned msg_len) {
     m_readbuf.resize(HEADER_SIZE + msg_len);
     boost::asio::mutable_buffers_1 buf = boost::asio::buffer(&m_readbuf[HEADER_SIZE], msg_len);
     boost::asio::async_read(socket_, buf,
-            boost::bind(&AsyncTcpSession::handle_read_body, shared_from_this(),
+            boost::bind(&AsyncUnixSocketSession::handle_read_body, shared_from_this(),
             boost::asio::placeholders::error));
 }
 
-void AsyncTcpSession::handle_read_body(const boost::system::error_code& error) {
+void AsyncUnixSocketSession::handle_read_body(const boost::system::error_code& error) {
     if (!error) {
         if (m_packed_request.unpack(m_readbuf)) {
             RequestPointer req = m_packed_request.get_msg();
@@ -110,7 +110,7 @@ void AsyncTcpSession::handle_read_body(const boost::system::error_code& error) {
             QueryParser::Query q;
             Utils::ResultVector result;
             QueryParser* parser = this->_db->getParser();
-            QueryPlanner* planner = this->_db->getPlanner();            
+            QueryPlanner* planner = this->_db->getPlanner();
             for (int i = 0; i < req->query_size(); i++) {
                 parser->parse(req->query(i), q);
                 result = planner->execute(q);

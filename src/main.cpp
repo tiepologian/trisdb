@@ -12,6 +12,7 @@
 #include "LogManager.h"
 #include "param_t.h"
 #include "TcpServer.h"
+#include "UnixSocketServer.h"
 #include "Shell.h"
 
 void init(param_t params);
@@ -78,9 +79,10 @@ void run() {
     //test();
 
     GenericServer* tcp = new TcpServer(db);
-    // UnixSocket *ux = new UnixSocket(db);
+    GenericServer* uds = new UnixSocketServer(db);    
     
-    db->addServer(tcp);  
+    db->addServer(tcp);
+    db->addServer(uds);
     db->run();
     
     LogManager::getSingleton()->log(LogManager::LINFO, "Shutting down database");

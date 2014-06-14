@@ -12,6 +12,7 @@
 #include "Utils.h"
 #include "TimeUtils.h"
 #include "TcpClient.h"
+#include "UnixSocketClient.h"
 #include "LogManager.h"
 #ifdef __linux__
 #include <readline/readline.h>

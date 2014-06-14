@@ -20,7 +20,8 @@ Shell::~Shell() {
 }
 
 void Shell::run() {
-    TcpClient* client = new TcpClient();
+    //TcpClient* client = new TcpClient();
+    UnixSocketClient* client = new UnixSocketClient();    
     LogManager::getSingleton()->log(LogManager::LINFO, "Shell ready");
     std::cout << std::endl;
 #ifdef __linux__
