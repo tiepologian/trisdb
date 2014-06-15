@@ -25,12 +25,14 @@ TrisDb *db = nullptr;
 
 int main(int argc, char *argv[]) {
     param_t params;
-    params.setPreamble("TrisDB.\nThis is a help message.\n");
+    params.setPreamble("TrisDB.\n");
     params.addFlag("--version", false, "version", "Show version number");
     params.addFlag("-v", false, "version-compact", "Show version number");
     params.addFlag("-h", false, "help-compact", "Show help");
     params.addFlag("--shell", false, "shell", "Start command-line shell");
     params.addFlag("-s", false, "shell-compact", "Start command-line shell");
+    params.addFlag("--benchmark", false, "benchmark", "Start benchmark utility");
+    params.addFlag("-b", false, "benchmark-compact", "Start benchmark utility");
     params.addFlag("--config", "noconfig", "config", "Specify configuration file");
     params.addFlag("-c", "noconfig", "config-compact", "Specify configuration file");
 
@@ -57,6 +59,14 @@ void init(param_t params) {
         exit(0);
     } else if (params.getBoolFlag("--shell") || params.getBoolFlag("-s")) {
         shell();
+    } else if (params.getBoolFlag("--benchmark") || params.getBoolFlag("-b")) {
+        conf = new Config();
+        conf->loadDefaults();
+        db = new TrisDb(conf);
+        db->benchmark();        
+        delete db;
+        delete conf;
+        exit(0);
     }
     // If no version, help or shell, read settings from file or use defaults and save in config var
     if (strcmp(params.getStringFlag("--config").c_str(), "noconfig") || strcmp(params.getStringFlag("-c").c_str(), "noconfig")) {
@@ -76,7 +86,6 @@ void run() {
     LogManager::getSingleton()->log(LogManager::LINFO, "Using config " + conf->getName());
     LogManager::getSingleton()->log(LogManager::LINFO, "Logging to " + conf->getSetting("logfile"));
     db = new TrisDb(conf);
-    //test();
 
     GenericServer* tcp = new TcpServer(db);
     GenericServer* uds = new UnixSocketServer(db);    
@@ -86,37 +95,9 @@ void run() {
     db->run();
     
     LogManager::getSingleton()->log(LogManager::LINFO, "Shutting down database");
+    delete uds;
     delete tcp;
     delete db;
-}
-
-void test() {
-    LogManager::getSingleton()->log(LogManager::LINFO, "Starting performance tests");
-    double now_1 = TimeUtils::getCurrentTimestamp();
-    for (int i = 0; i < 1000000; i++) {
-        db->create("Key" + std::to_string(i), "Chiave" + std::to_string(i), Utils::toString(i));
-        if (i % 100000 == 0) {
-            std::cout << std::to_string(i) << std::endl;
-        }
-    }
-    double now_2 = TimeUtils::getCurrentTimestamp();
-    double tempo = now_2 - now_1;
-    double speed = 1000000.0 / (tempo / 1000.0);
-    LogManager::getSingleton()->log(LogManager::LINFO, "Writing 1,000,000 triples took " + std::to_string(tempo) + "ms");
-    LogManager::getSingleton()->log(LogManager::LINFO, "Write Speed: " + std::to_string(speed) + "/s");
-
-    double now_3 = TimeUtils::getCurrentTimestamp();
-    for (int i = 0; i < 1000000; i++) {
-        Utils::ResultVector res = db->getFromA("Key" + std::to_string(i));
-        if (i % 100000 == 0) {
-            std::cout << std::to_string(i) << std::endl;
-        }
-    }
-    double now_4 = TimeUtils::getCurrentTimestamp();
-    double tempo_2 = now_4 - now_3;
-    double speed_2 = 1000000.0 / (tempo_2 / 1000.0);
-    LogManager::getSingleton()->log(LogManager::LINFO, "Reading 1,000,000 triples took " + std::to_string(tempo_2) + "ms");
-    LogManager::getSingleton()->log(LogManager::LINFO, "Read Speed: " + std::to_string(speed_2) + "/s");
 }
 
 void shell() {

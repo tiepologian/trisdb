@@ -50,14 +50,14 @@ Utils::ResultVector TrisDb::getFromC(std::string c) {
 }
 
 Utils::ResultVector TrisDb::get(int index, std::string c) {
-    switch(index){
+    switch (index) {
         case 0:
             return getFromA(c);
         case 1:
             return getFromB(c);
         case 2:
             return getFromC(c);
-    }        
+    }
 }
 
 Utils::ResultVector TrisDb::getAll() {
@@ -80,7 +80,7 @@ Utils::ResultVector TrisDb::status() {
     rss /= 1024.0;
     result.push_back(std::make_tuple("memory", "value", std::to_string(rss) + " MB"));
     int connections = 0;
-    for(auto &i : this->_servers) {
+    for (auto &i : this->_servers) {
         connections += i->getOpenConnections();
     }
     result.push_back(std::make_tuple("connections", "value", std::to_string(connections)));
@@ -90,6 +90,35 @@ Utils::ResultVector TrisDb::status() {
 void TrisDb::clearAll() {
     boost::lock_guard<boost::shared_mutex> lock(_mutex);
     dbData.clearAll();
+}
+
+void TrisDb::benchmark() {
+    LogManager::getSingleton()->log(LogManager::LINFO, "Starting benchmark");
+    double now_1 = TimeUtils::getCurrentTimestamp();
+    for (int i = 0; i < 1000000; i++) {
+        create("Key" + std::to_string(i), "Value" + std::to_string(i), Utils::toString(i));
+        if (i % 100000 == 0) {
+            std::cout << std::to_string(i) << std::endl;
+        }
+    }
+    double now_2 = TimeUtils::getCurrentTimestamp();
+    double tempo = now_2 - now_1;
+    double speed = 1000000.0 / (tempo / 1000.0);
+    LogManager::getSingleton()->log(LogManager::LINFO, "Writing 1,000,000 triples took " + std::to_string(tempo) + "ms");
+    LogManager::getSingleton()->log(LogManager::LINFO, "Write Speed: " + std::to_string(speed) + "/s");
+
+    double now_3 = TimeUtils::getCurrentTimestamp();
+    for (int i = 0; i < 1000000; i++) {
+        Utils::ResultVector res = getFromA("Key" + std::to_string(i));
+        if (i % 100000 == 0) {
+            std::cout << std::to_string(i) << std::endl;
+        }
+    }
+    double now_4 = TimeUtils::getCurrentTimestamp();
+    double tempo_2 = now_4 - now_3;
+    double speed_2 = 1000000.0 / (tempo_2 / 1000.0);
+    LogManager::getSingleton()->log(LogManager::LINFO, "Reading 1,000,000 triples took " + std::to_string(tempo_2) + "ms");
+    LogManager::getSingleton()->log(LogManager::LINFO, "Read Speed: " + std::to_string(speed_2) + "/s");
 }
 
 QueryParser* TrisDb::getParser() {
@@ -103,18 +132,18 @@ QueryPlanner* TrisDb::getPlanner() {
 void TrisDb::run() {
     // main thread calls run to start server
     // every run method creates a new thread, then main thread loops
-    for(auto &i : this->_servers) {
-        LogManager::getSingleton()->log(LogManager::LINFO, "Starting " + i->getServerName());        
+    for (auto &i : this->_servers) {
+        LogManager::getSingleton()->log(LogManager::LINFO, "Starting " + i->getServerName());
         i->run();
     }
     // sleep
     LogManager::getSingleton()->log(LogManager::LINFO, "Database ready");
-    while(!TrisDb::_terminateLoop) {
+    while (!TrisDb::_terminateLoop) {
         std::chrono::milliseconds dura(2000);
         std::this_thread::sleep_for(dura);
     }
     // SIGTERM received, stop servers
-    for(auto &i : this->_servers) {
+    for (auto &i : this->_servers) {
         i->stop();
     }
     // give the other threads time to terminate

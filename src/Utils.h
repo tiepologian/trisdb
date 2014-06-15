@@ -122,11 +122,10 @@ namespace Utils {
         long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
         vm_usage = vsize / 1024.0;
         resident_set = rss * page_size_kb;
-    }
+    }    
 
     class CustomException : std::exception {
     public:
-
         virtual const char* what() const throw () {
             return "Syntax Error in command!";
         }

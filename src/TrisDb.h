@@ -36,6 +36,7 @@ public:
     QueryParser* getParser();
     QueryPlanner* getPlanner();
     static void stop(int param);
+    void benchmark();
 private:
     TripleMap<std::string, std::string, std::string> dbData;
     QueryParser* _parser;
