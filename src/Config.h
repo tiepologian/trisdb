@@ -8,6 +8,7 @@
 #ifndef CONFIG_H
 #define	CONFIG_H
 
+#include "ConfigReader.h"
 #include "Utils.h"
 #include <map>
 

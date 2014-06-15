@@ -25,7 +25,7 @@
 
 class UnixSocketServer : public GenericServer {
 public:
-    UnixSocketServer(TrisDb* db);
+    UnixSocketServer(TrisDb* db, std::string path);
     UnixSocketServer(const UnixSocketServer& orig);
     virtual ~UnixSocketServer();
     virtual void run();
@@ -34,6 +34,7 @@ public:
     std::atomic<int> cnx = ATOMIC_VAR_INIT(0);
 private:
     TrisDb* _db;
+    std::string _path;
     boost::asio::io_service io_service;
     void server();
 };

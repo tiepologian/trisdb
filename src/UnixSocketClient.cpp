@@ -10,13 +10,13 @@
 
 using boost::asio::local::stream_protocol;
 
-UnixSocketClient::UnixSocketClient() {
+UnixSocketClient::UnixSocketClient(std::string path) {
     try {
         boost::asio::io_service io_service;
         _s = std::make_shared<boost::asio::local::stream_protocol::socket>(io_service);
-        _s->connect(boost::asio::local::stream_protocol::endpoint("/tmp/trisdb"));        
+        _s->connect(boost::asio::local::stream_protocol::endpoint(path));        
     } catch (std::exception& e) {
-        LogManager::getSingleton()->log(LogManager::LCRITICAL, "Unable to connect to database on socket /tmp/trisdb");
+        LogManager::getSingleton()->log(LogManager::LCRITICAL, "Unable to connect to database on socket "+path);
         exit(1);
     }
 }

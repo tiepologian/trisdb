@@ -11,8 +11,7 @@
 #include "table_printer.h"
 #include "Utils.h"
 #include "TimeUtils.h"
-#include "TcpClient.h"
-#include "UnixSocketClient.h"
+#include "GenericClient.h"
 #include "LogManager.h"
 #ifdef __linux__
 #include <readline/readline.h>
@@ -21,7 +20,7 @@
 
 class Shell {
 public:
-    Shell();
+    Shell(std::string port, std::string socket);
     Shell(const Shell& orig);
     virtual ~Shell();
     void run();
@@ -29,6 +28,9 @@ public:
 private:
     void quit();
     void printQueryResult(QueryResponse res, std::string cmd);
+    std::string _port;
+    std::string _socketPath;
+    bool useSocket;
 };
 
 #endif	/* SHELL_H */

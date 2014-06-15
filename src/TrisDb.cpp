@@ -14,10 +14,23 @@ TrisDb::TrisDb(Config* config) {
     signal(SIGTERM, stop);
     this->_parser = new QueryParser();
     this->_planner = new QueryPlanner(this);
+    this->_config = config;
+    if (this->_config->getSetting("port") != "0") {
+        // listen on TCP socket
+        GenericServer* tcp = new TcpServer(this, std::atoi(_config->getSetting("port").c_str()));
+        this->addServer(tcp);
+    }
+    if (this->_config->getSetting("unixsocket") != "no") {
+        // listen on Unix socket
+        GenericServer* uds = new UnixSocketServer(this, this->_config->getSetting("unixsocket"));
+        this->addServer(uds);
+    }
 }
 
 TrisDb::~TrisDb() {
-    //
+    for (auto &i : this->_servers) {
+        delete i;
+    }
 }
 
 void TrisDb::addServer(GenericServer* g) {

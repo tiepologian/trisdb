@@ -10,14 +10,14 @@
 
 using boost::asio::ip::tcp;
 
-TcpClient::TcpClient() {
+TcpClient::TcpClient(std::string port) {
     try {
         boost::asio::io_service io_service;
         _s = std::make_shared<boost::asio::ip::tcp::socket>(io_service);
         tcp::resolver resolver(io_service);
-        boost::asio::connect(*_s, resolver.resolve({"localhost", "1205"}));
+        boost::asio::connect(*_s, resolver.resolve({"localhost", port}));
     } catch (std::exception& e) {
-        LogManager::getSingleton()->log(LogManager::LCRITICAL, "Unable to connect to database on localhost:1205");
+        LogManager::getSingleton()->log(LogManager::LCRITICAL, "Unable to connect to database on localhost:"+port);
         exit(1);
     }
 }

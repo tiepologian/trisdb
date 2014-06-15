@@ -8,21 +8,13 @@
 #ifndef UNIXSOCKETCLIENT_H
 #define	UNIXSOCKETCLIENT_H
 
-#include <boost/asio.hpp>
-#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
-#include "message.pb.h"
-#include "Utils.h"
-#include "PackedMessage.h"
+#include "GenericClient.h"
 
-class UnixSocketClient {
+class UnixSocketClient : public GenericClient {
 public:
-    UnixSocketClient();
+    UnixSocketClient(std::string path);
     virtual ~UnixSocketClient();
-    typedef boost::shared_ptr<QueryRequest> RequestPointer;
-    typedef boost::shared_ptr<QueryResponse> ResponsePointer;
-    QueryResponse connect(RequestPointer resp);
+    virtual QueryResponse connect(RequestPointer resp);
 private:
     std::shared_ptr<boost::asio::local::stream_protocol::socket> _s;
 };

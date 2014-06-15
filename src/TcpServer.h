@@ -24,7 +24,7 @@
 
 class TcpServer : public GenericServer {
 public:
-    TcpServer(TrisDb* db);
+    TcpServer(TrisDb* db, int port);
     TcpServer(const TcpServer& orig);
     virtual ~TcpServer();
     virtual void run();
@@ -33,6 +33,7 @@ public:
     std::atomic<int> cnx = ATOMIC_VAR_INIT(0);
 private:
     TrisDb* _db;
+    int _port;
     boost::asio::io_service io_service;
     void server();
 };

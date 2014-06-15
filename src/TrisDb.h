@@ -16,6 +16,8 @@
 #include "QueryPlanner.h"
 #include "GenericServer.h"
 #include "TimeUtils.h"
+#include "TcpServer.h"
+#include "UnixSocketServer.h"
 
 class TrisDb {
 public:
@@ -41,6 +43,7 @@ private:
     TripleMap<std::string, std::string, std::string> dbData;
     QueryParser* _parser;
     QueryPlanner* _planner;
+    Config* _config;
     std::vector<GenericServer*> _servers;
     static volatile sig_atomic_t _terminateLoop;
     boost::shared_mutex _mutex;

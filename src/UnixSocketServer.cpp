@@ -10,9 +10,10 @@
 
 using boost::asio::ip::tcp;
 
-UnixSocketServer::UnixSocketServer(TrisDb* db) {
+UnixSocketServer::UnixSocketServer(TrisDb* db, std::string path) {
     this->_db = db;
     this->_serverName = "Unix Domain Socket";
+    this->_path = path;
 }
 
 UnixSocketServer::UnixSocketServer(const UnixSocketServer& orig) {
@@ -24,10 +25,10 @@ UnixSocketServer::~UnixSocketServer() {
 }
 
 void UnixSocketServer::server() {
-    LogManager::getSingleton()->log(LogManager::LINFO, "Listening for Unix Domain connections on /tmp/trisdb");
-    std::remove("/tmp/trisdb");
-    AsyncUnixSocketServer s(io_service, "/tmp/trisdb", this->_db, this);
-    chmod("/tmp/trisdb", S_IRWXU | S_IRWXG | S_IRWXO);
+    LogManager::getSingleton()->log(LogManager::LINFO, "Listening for Unix Domain connections on " + this->_path);
+    std::remove(this->_path.c_str());
+    AsyncUnixSocketServer s(io_service, this->_path, this->_db, this);
+    chmod(this->_path.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
     // 2nd thread blocks here
     io_service.run();
 }

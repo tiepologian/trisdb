@@ -6,9 +6,18 @@
  */
 
 #include "Shell.h"
+#include "UnixSocketClient.h"
+#include "TcpClient.h"
 
-Shell::Shell() {
-    // test connection to database
+Shell::Shell(std::string port, std::string socket) {
+    if(socket != "nosocket") {
+        this->useSocket = true;
+        this->_socketPath = socket;
+    }
+    else {
+        this->useSocket = false;
+        this->_port = port;
+    }
 }
 
 Shell::Shell(const Shell& orig) {
@@ -20,8 +29,9 @@ Shell::~Shell() {
 }
 
 void Shell::run() {
-    //TcpClient* client = new TcpClient();
-    UnixSocketClient* client = new UnixSocketClient();    
+    GenericClient* client;
+    if(this->useSocket) client = new UnixSocketClient(this->_socketPath);
+    else client = new TcpClient(this->_port);    
     LogManager::getSingleton()->log(LogManager::LINFO, "Shell ready");
     std::cout << std::endl;
 #ifdef __linux__

@@ -10,9 +10,10 @@
 
 using boost::asio::ip::tcp;
 
-TcpServer::TcpServer(TrisDb* db) {
+TcpServer::TcpServer(TrisDb* db, int port) {
     this->_db = db;
     this->_serverName = "Tcp Server";
+    this->_port = port;
 }
 
 TcpServer::TcpServer(const TcpServer& orig) {
@@ -24,8 +25,8 @@ TcpServer::~TcpServer() {
 }
 
 void TcpServer::server() {
-    LogManager::getSingleton()->log(LogManager::LINFO, "Listening for TCP connections on port 1205");
-    AsyncTcpServer s(io_service, 1205, this->_db, this);
+    LogManager::getSingleton()->log(LogManager::LINFO, "Listening for TCP connections on port " + std::to_string(this->_port));
+    AsyncTcpServer s(io_service, this->_port, this->_db, this);
     // 2nd thread blocks here
     io_service.run();
 }
