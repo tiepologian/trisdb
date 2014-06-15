@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <atomic>
 #include <memory>
+#include <sys/stat.h>
 
 class UnixSocketServer : public GenericServer {
 public:

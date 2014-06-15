@@ -16,7 +16,7 @@ UnixSocketClient::UnixSocketClient() {
         _s = std::make_shared<boost::asio::local::stream_protocol::socket>(io_service);
         _s->connect(boost::asio::local::stream_protocol::endpoint("/tmp/trisdb"));        
     } catch (std::exception& e) {
-        LogManager::getSingleton()->log(LogManager::LCRITICAL, "Unable to connect to database on localhost:1205");
+        LogManager::getSingleton()->log(LogManager::LCRITICAL, "Unable to connect to database on socket /tmp/trisdb");
         exit(1);
     }
 }
