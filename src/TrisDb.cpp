@@ -143,6 +143,11 @@ QueryPlanner* TrisDb::getPlanner() {
 }
 
 void TrisDb::run() {
+    // Check manifest file to see if db exists
+    if (StorageEngine::getSingleton()->checkManifest(this->_config->getSetting("dbfolder"))) {
+        // load database
+        StorageEngine::getSingleton()->syncLoad(&this->dbData, this->_config->getSetting("dbfolder"));
+    }
     // main thread calls run to start server
     // every run method creates a new thread, then main thread loops
     for (auto &i : this->_servers) {

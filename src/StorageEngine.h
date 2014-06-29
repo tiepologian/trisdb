@@ -17,6 +17,7 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "TripleMap.h"
 #include "LogManager.h"
 
@@ -24,12 +25,15 @@ class StorageEngine {
 public:    
     static StorageEngine* getSingleton();
     static void syncSave(TripleMap<std::string, std::string, std::string> *data, std::string dbpath);
+    static void syncLoad(TripleMap<std::string, std::string, std::string> *data, std::string dbpath);
+    static bool checkManifest(std::string dbpath);
 private:
     static StorageEngine* inst_;    
     StorageEngine() {};
     StorageEngine(const StorageEngine&) {};
     StorageEngine& operator=(const StorageEngine&);  
     void saveDataToFile(TripleMap<std::string, std::string, std::string> *data, std::string filename, int index);
+    void loadDataFromFile(TripleMap<std::string, std::string, std::string> *data, std::string filename, int index);
 };
 
 #endif	/* STORAGEENGINE_H */
