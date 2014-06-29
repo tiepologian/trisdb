@@ -18,6 +18,7 @@
 #include "TimeUtils.h"
 #include "TcpServer.h"
 #include "UnixSocketServer.h"
+#include "StorageEngine.h"
 
 class TrisDb {
 public:

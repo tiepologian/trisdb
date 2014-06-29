@@ -160,7 +160,11 @@ void TrisDb::run() {
         i->stop();
     }
     // give the other threads time to terminate
+    // TODO:    this isn't very secure because if there are queries going on it
+    //          could take longer to close TCP or Unix Socket connections.
+    //          We should wait for a message/signal from the threads
     sleep(2);
+    StorageEngine::getSingleton()->syncSave(&this->dbData, this->_config->getSetting("dbfolder"));
 }
 
 void TrisDb::stop(int param) {

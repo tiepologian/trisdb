@@ -111,6 +111,18 @@ public:
         m1.clear();
         m2.clear();
         m3.clear();
+    } 
+    
+    std::unordered_multimap<T1, std::tuple<T1, T2, T3>>* getDataA() {
+        return &m1;
+    }
+    
+    std::unordered_multimap<T2, std::tuple<T1, T2, T3>>* getDataB() {
+        return &m2;
+    }
+    
+    std::unordered_multimap<T3, std::tuple<T1, T2, T3>>* getDataC() {
+        return &m3;
     }
 private:
     std::unordered_multimap<T1, std::tuple<T1, T2, T3>> m1;

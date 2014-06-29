@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 project(trisdb)
 
 find_package(Boost REQUIRED)
-add_executable(trisdb Config.cpp LogManager.cpp main.cpp message.pb.h param_t.h QueryParser.h QueryPlanner.h Shell.h table_printer.h TcpClient.cpp TcpServer.cpp TimeUtils.cpp Tokenizer.cpp TripleMap.h TrisDb.h Config.h LogManager.h message.pb.cc param_t.cpp QueryParser.cpp QueryPlanner.cpp Shell.cpp table_printer.cpp table_printer.tpp.h TcpClient.h TcpServer.h TimeUtils.h Tokenizer.h TrisDb.cpp Utils.h Config.cpp LogManager.cpp main.cpp message.pb.h param_t.h QueryParser.h QueryPlanner.h Shell.h table_printer.h TcpClient.cpp TcpServer.cpp TimeUtils.cpp Tokenizer.cpp TripleMap.h TrisDb.h Config.h LogManager.h message.pb.cc param_t.cpp QueryParser.cpp QueryPlanner.cpp Shell.cpp table_printer.cpp table_printer.tpp.h TcpClient.h TcpServer.h TimeUtils.h Tokenizer.h TrisDb.cpp Utils.h GenericServer.h PackedMessage.h UnixSocketServer.h UnixSocketServer.cpp UnixSocketClient.h UnixSocketClient.cpp ConfigReader.h GenericClient.h)
+add_executable(trisdb Config.cpp LogManager.cpp main.cpp message.pb.h param_t.h QueryParser.h QueryPlanner.h Shell.h table_printer.h TcpClient.cpp TcpServer.cpp TimeUtils.cpp Tokenizer.cpp TripleMap.h TrisDb.h Config.h LogManager.h message.pb.cc param_t.cpp QueryParser.cpp QueryPlanner.cpp Shell.cpp table_printer.cpp table_printer.tpp.h TcpClient.h TcpServer.h TimeUtils.h Tokenizer.h TrisDb.cpp Utils.h Config.cpp LogManager.cpp main.cpp message.pb.h param_t.h QueryParser.h QueryPlanner.h Shell.h table_printer.h TcpClient.cpp TcpServer.cpp TimeUtils.cpp Tokenizer.cpp TripleMap.h TrisDb.h Config.h LogManager.h message.pb.cc param_t.cpp QueryParser.cpp QueryPlanner.cpp Shell.cpp table_printer.cpp table_printer.tpp.h TcpClient.h TcpServer.h TimeUtils.h Tokenizer.h TrisDb.cpp Utils.h GenericServer.h PackedMessage.h UnixSocketServer.h UnixSocketServer.cpp UnixSocketClient.h UnixSocketClient.cpp ConfigReader.h GenericClient.h StorageEngine.h StorageEngine.cpp)
 
 set(EXECUTABLE_OUTPUT_PATH ../dist/)
 set(CMAKE_CXX_FLAGS "-O3 -DUSE_BOOST_KARMA")
-target_link_libraries(trisdb readline protobuf pthread boost_system boost_thread)
+target_link_libraries(trisdb readline protobuf pthread boost_system boost_thread boost_filesystem snappy)
 
 install(TARGETS trisdb DESTINATION /usr/local/bin/)
 install (FILES ../utils/trisdb-init.conf DESTINATION /etc/init/ RENAME trisdb.conf)
