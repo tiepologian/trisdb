@@ -11,6 +11,7 @@ An open-source in-memory triplestore database with a beautiful GUI and incredibl
 * libboost-all-dev >= 1.48
 * libreadline6-dev
 * libprotobuf-dev
+* libsnappy
 
 ### Installation
 ```
