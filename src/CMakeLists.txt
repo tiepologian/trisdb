@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(trisdb)
 
-find_package(Boost REQUIRED)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 add_executable(trisdb Config.cpp LogManager.cpp main.cpp message.pb.h param_t.h QueryParser.h QueryPlanner.h Shell.h table_printer.h TcpClient.cpp TcpServer.cpp TimeUtils.cpp Tokenizer.cpp TripleMap.h TrisDb.h Config.h LogManager.h message.pb.cc param_t.cpp QueryParser.cpp QueryPlanner.cpp Shell.cpp table_printer.cpp table_printer.tpp.h TcpClient.h TcpServer.h TimeUtils.h Tokenizer.h TrisDb.cpp Utils.h Config.cpp LogManager.cpp main.cpp message.pb.h param_t.h QueryParser.h QueryPlanner.h Shell.h table_printer.h TcpClient.cpp TcpServer.cpp TimeUtils.cpp Tokenizer.cpp TripleMap.h TrisDb.h Config.h LogManager.h message.pb.cc param_t.cpp QueryParser.cpp QueryPlanner.cpp Shell.cpp table_printer.cpp table_printer.tpp.h TcpClient.h TcpServer.h TimeUtils.h Tokenizer.h TrisDb.cpp Utils.h GenericServer.h PackedMessage.h UnixSocketServer.h UnixSocketServer.cpp UnixSocketClient.h UnixSocketClient.cpp ConfigReader.h GenericClient.h StorageEngine.h StorageEngine.cpp)
 
 set(EXECUTABLE_OUTPUT_PATH ../dist/)
@@ -22,3 +22,7 @@ elseif(COMPILER_SUPPORTS_CXX0X)
 else()
         message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
+find_package(Protobuf REQUIRED)
+find_package(Boost REQUIRED)
+find_package(Snappy REQUIRED)
+find_package(Readline REQUIRED)
