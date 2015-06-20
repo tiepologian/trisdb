@@ -42,11 +42,15 @@ void Shell::run() {
         try {
             if (input != "") {
                 if (boost::to_upper_copy(input) == "QUIT") break;
-                RequestPointer req(new QueryRequest);
-                req->add_query(input);
-                req->set_timestamp(std::to_string(TimeUtils::getCurrentTimestamp()));
-                printQueryResult(client->connect(req), boost::to_upper_copy(input.substr(0, input.find(" "))));
-                req.reset();
+		std::string cmd = boost::to_upper_copy(input.substr(0, input.find(" ")));
+		if(Utils::ValidCommands.find(cmd) == Utils::ValidCommands.end()) std::cout << "INVALID COMMAND" << std::endl;
+                else {
+		    RequestPointer req(new QueryRequest);
+                    req->add_query(input);
+                    req->set_timestamp(std::to_string(TimeUtils::getCurrentTimestamp()));
+                    printQueryResult(client->connect(req), boost::to_upper_copy(input.substr(0, input.find(" "))));
+                    req.reset();
+		}
             }
         } catch (Utils::CustomException& e) {
             LogManager::getSingleton()->log(LogManager::LERROR, e.what());
