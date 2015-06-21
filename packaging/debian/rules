@@ -1,0 +1,27 @@
+#!/usr/bin/make -f
+
+BUILDDIR = build
+
+# secondly called by launchpad
+build:
+	mkdir $(BUILDDIR);
+	cd $(BUILDDIR); cmake -DDEB_PACKAGING=ON -DCMAKE_INSTALL_PREFIX=../packaging/debian/tmp/usr ../src/
+	make -C $(BUILDDIR)
+
+# thirdly called by launchpad
+binary: binary-indep binary-arch
+
+binary-indep:
+	# nothing to be done
+
+binary-arch:
+	cd $(BUILDDIR); cmake -P cmake_install.cmake
+	mkdir packaging/debian/tmp/DEBIAN
+	dpkg-gencontrol -ptrisdb
+	dpkg --build packaging/debian/tmp ..
+
+# firstly called by launchpad
+clean:
+	rm -rf $(BUILDDIR)
+
+.PHONY: binary binary-arch binary-indep clean

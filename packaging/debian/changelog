@@ -1,0 +1,5 @@
+trisdb (0.0.4) trusty; urgency=low
+
+  * Added support for DEB packaging
+
+ -- Gianluca Tiepolo <tiepolo.gian@gmail.com>  Sun, 21 Jun 2015 18:21:44 +0000

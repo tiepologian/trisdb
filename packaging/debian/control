@@ -1,0 +1,10 @@
+Source: trisdb
+Section: database
+Priority: optional
+Maintainer: Gianluca Tiepolo <tiepolo.gian@gmail.com>
+Build-Depends: cmake, build-essential, libboost-all-dev, libreadline6-dev, libprotobuf-dev, libsnappy-dev
+Homepage: https://github.com/tiepologian/trisdb
+
+Package: trisdb
+Architecture: any
+Description: TrisDB database
