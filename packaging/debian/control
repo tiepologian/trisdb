@@ -7,5 +7,5 @@ Homepage: https://github.com/tiepologian/trisdb
 
 Package: trisdb
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: libreadline6, libprotobuf8, libboost-system-dev, libboost-thread-dev, libboost-filesystem-dev, libsnappy1
 Description: TrisDB database
