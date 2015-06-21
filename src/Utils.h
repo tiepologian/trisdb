@@ -14,8 +14,8 @@
 #include <unistd.h>
 #include <fstream>
 #include <ostream>
-#include <algorithm> 
-#include <functional> 
+#include <algorithm>
+#include <functional>
 #include <cctype>
 #include <locale>
 #include <vector>
@@ -27,7 +27,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
-#define TRISDB_VERSION "0.0.4"
+#define TRISDB_VERSION "0.0.5"
 
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
@@ -122,7 +122,7 @@ namespace Utils {
         long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
         vm_usage = vsize / 1024.0;
         resident_set = rss * page_size_kb;
-    }    
+    }
 
     class CustomException : std::exception {
     public:
