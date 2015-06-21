@@ -7,4 +7,5 @@ Homepage: https://github.com/tiepologian/trisdb
 
 Package: trisdb
 Architecture: any
+Depends: ${shlibs:Depends}
 Description: TrisDB database
