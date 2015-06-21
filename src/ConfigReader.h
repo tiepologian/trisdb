@@ -91,7 +91,9 @@ class Reader {
     inline void parseValue(const std::string &strVal, std::string &val) const;
     inline void parseValue(const std::string &strVal, std::vector<std::string> &val)const; // make array of strings
     inline void parseValue(const std::string &strVal, size_t &val) const; // size_t conversion
+    #ifdef __x86_64__
     inline void parseValue(const std::string &strVal, unsigned int &val) const; // 32 bit unsigned int conversion
+    #endif
 
     template <class T > inline void parseValue(const std::string &strVal, std::vector<T> &val) const {
         /*!
@@ -550,6 +552,7 @@ inline void Reader::parseValue(const std::string &strVal, size_t &val) const {
     }
 }
 
+#ifdef __x86_64__
 inline void Reader::parseValue(const std::string &strVal, unsigned int &val) const {
     /*!
      * Parses to 32 bit unsigned int. Checks that value is positive.
@@ -559,6 +562,7 @@ inline void Reader::parseValue(const std::string &strVal, unsigned int &val) con
     parseValue(strVal, tval);
     val = static_cast<unsigned int> (tval);
 }
+#endif
 
 #endif	/* CONFIGREADER_H */
 

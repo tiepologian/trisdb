@@ -9,9 +9,16 @@ set(EXECUTABLE_OUTPUT_PATH ../dist/)
 set(CMAKE_CXX_FLAGS "-O3 -DUSE_BOOST_KARMA")
 target_link_libraries(trisdb readline protobuf pthread boost_system boost_thread boost_filesystem snappy)
 
-install(TARGETS trisdb DESTINATION /usr/local/bin/)
-install (FILES ../utils/trisdb-init.conf DESTINATION /etc/init/ RENAME trisdb.conf)
-install (FILES ../utils/trisdb.conf DESTINATION /etc/trisdb/)
+install(TARGETS trisdb DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
+# This is OK for deb packaging
+if(DEB_PACKAGING)
+	install (FILES ../utils/trisdb-init.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/../etc/init/ RENAME trisdb.conf)
+	install (FILES ../utils/trisdb.conf DESTINATION ${CMAKE_INSTALL_PREFIX}/../etc/trisdb/)
+else()
+	install (FILES ../utils/trisdb-init.conf DESTINATION /etc/init/ RENAME trisdb.conf)
+	install (FILES ../utils/trisdb.conf DESTINATION /etc/trisdb/)
+endif()
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
