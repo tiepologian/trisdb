@@ -157,18 +157,15 @@ void TrisDb::run() {
     // sleep
     LogManager::getSingleton()->log(LogManager::LINFO, "Database ready");
     while (!TrisDb::_terminateLoop) {
-        std::chrono::milliseconds dura(2000);
+        std::chrono::milliseconds dura(1000);
         std::this_thread::sleep_for(dura);
     }
     // SIGTERM received, stop servers
     for (auto &i : this->_servers) {
         i->stop();
     }
-    // give the other threads time to terminate
-    // TODO:    this isn't very secure because if there are queries going on it
-    //          could take longer to close TCP or Unix Socket connections.
-    //          We should wait for a message/signal from the threads
-    sleep(2);
+    // give the IO threads time to terminate
+    sleep(1);
     StorageEngine::getSingleton()->syncSave(&this->dbData, this->_config->getSetting("dbfolder"));
 }
 
