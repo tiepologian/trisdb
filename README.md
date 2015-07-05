@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tiepologian/trisdb.svg?branch=master)](https://travis-ci.org/tiepologian/trisdb)
+
 trisdb
 ======
 
