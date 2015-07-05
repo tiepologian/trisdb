@@ -3,7 +3,6 @@ language: cpp
 
 compiler:
   - gcc
-  - clang
 
 # Install build dependencies
 before_script:
