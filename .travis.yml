@@ -1,0 +1,25 @@
+# Environment
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+# Install build dependencies
+before_script:
+  - sudo apt-get install cmake libboost-all-dev libreadline6-dev libprotobuf-dev libsnappy-dev
+
+# Build script
+script:
+  - cd build/
+  - cmake ../src/
+  - make -j 3
+
+notifications:
+  # Email commit author only on build status change
+  email:
+    on_success: change
+    on_failure: always
+
+os:
+  - linux
