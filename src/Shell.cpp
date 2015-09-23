@@ -1,13 +1,19 @@
-/* 
+/*
  * File:   Shell.cpp
  * Author: tiepologian <tiepolo.gian@gmail.com>
- * 
+ *
  * Created on 28 maggio 2014, 12.27
  */
 
 #include "Shell.h"
 #include "UnixSocketClient.h"
 #include "TcpClient.h"
+
+static char** my_completion(const char*, int ,int);
+char* my_generator(const char*,int);
+char * dupstr (char*);
+void *xmalloc (int);
+char* cmd [] ={ "CREATE", "GET", "DELETE", "CLEAR", "STATUS", "COUNT", "QUIT"};
 
 Shell::Shell(std::string port, std::string socket) {
     if(socket != "nosocket") {
@@ -31,17 +37,17 @@ Shell::~Shell() {
 void Shell::run() {
     GenericClient* client;
     if(this->useSocket) client = new UnixSocketClient(this->_socketPath);
-    else client = new TcpClient(this->_port);    
+    else client = new TcpClient(this->_port);
     LogManager::getSingleton()->log(LogManager::LINFO, "Shell ready");
     std::cout << std::endl;
 #ifdef __linux__
     char *buf;
-    rl_bind_key('\t', rl_abort); //disable auto-complete
+    rl_attempted_completion_function = my_completion;
     while ((buf = readline(">> ")) != NULL) {
         std::string input(buf);
         try {
             if (input != "") {
-                if (boost::to_upper_copy(input) == "QUIT") break;
+		if(strncmp(boost::to_upper_copy(input).c_str(), "QUIT", 4) == 0) break;
 		std::string cmd = boost::to_upper_copy(input.substr(0, input.find(" ")));
 		if(Utils::ValidCommands.find(cmd) == Utils::ValidCommands.end()) std::cout << "INVALID COMMAND" << std::endl;
                 else {
@@ -60,7 +66,7 @@ void Shell::run() {
             add_history(buf);
     }
     free(buf);
-#else   
+#else
     while (true) {
         std::cout << "> ";
         std::string input;
@@ -120,3 +126,48 @@ void Shell::printQueryResult(QueryResponse res, std::string cmd) {
     if (cmd.substr(0, 2) == "GE") std::cout << "\nRead " << res.data_size() << " rows in " << queryTime << "ms" << std::endl << std::endl;
     else std::cout << "Query executed in " << queryTime << "ms" << std::endl << std::endl;
 }
+
+static char** my_completion( const char * text , int start,  int end) {
+    char **matches;
+    matches = (char **)NULL;
+    if (start == 0)
+        matches = rl_completion_matches ((char*)text, &my_generator);
+    return (matches);
+}
+
+char* my_generator(const char* text, int state) {
+    static int list_index, len;
+    char *name;
+
+    if (!state) {
+        list_index = 0;
+        len = strlen (text);
+    }
+
+    std::string userCommand = text;
+
+    while (name = cmd[list_index]) {
+        list_index++;
+        if (strncmp (name, boost::to_upper_copy(userCommand).c_str(), len) == 0) return (dupstr(name));
+    }
+    /* If no names matched, then return NULL. */
+    return ((char *)NULL);
+}
+
+char * dupstr (char* s) {
+  char *r;
+  r = (char*) xmalloc ((strlen (s) + 1));
+  strcpy (r, s);
+  return (r);
+}
+
+void * xmalloc (int size) {
+    void *buf;
+    buf = malloc (size);
+    if (!buf) {
+        fprintf (stderr, "Error: Out of memory. Exiting.'n");
+        exit (1);
+    }
+    return buf;
+}
+

@@ -6,7 +6,7 @@ add_executable(trisdb Config.cpp LogManager.cpp main.cpp message.pb.h QueryParse
 
 set(CMAKE_INCLUDE_CURRENT_DIR on)
 set(EXECUTABLE_OUTPUT_PATH ../dist/)
-set(CMAKE_CXX_FLAGS "-O3 -DUSE_BOOST_KARMA")
+set(CMAKE_CXX_FLAGS "-O3 -DUSE_BOOST_KARMA -Wno-write-strings")
 target_link_libraries(trisdb readline protobuf pthread boost_system boost_thread boost_filesystem snappy)
 
 install(TARGETS trisdb DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
