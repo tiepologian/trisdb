@@ -9,6 +9,7 @@
 #define	TCPCLIENT_H
 
 #include "GenericClient.h"
+#include "SimpleTimer.h"
 
 class TcpClient : public GenericClient {
 public:

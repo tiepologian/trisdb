@@ -9,6 +9,7 @@
 #include "LogManager.h"
 
 using boost::asio::ip::tcp;
+using namespace simpletimer;
 
 TcpClient::TcpClient(std::string port) {
     try {

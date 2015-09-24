@@ -9,6 +9,8 @@
 #include "UnixSocketClient.h"
 #include "TcpClient.h"
 
+using namespace simpletimer;
+
 static char** my_completion(const char*, int ,int);
 char* my_generator(const char*,int);
 char * dupstr (char*);

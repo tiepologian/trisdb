@@ -9,6 +9,7 @@
 #include "LogManager.h"
 
 using boost::asio::ip::tcp;
+using namespace simpletimer;
 
 TcpServer::TcpServer(TrisDb* db, int port) {
     this->_db = db;
@@ -111,7 +112,7 @@ void AsyncTcpSession::handle_read_body(const boost::system::error_code& error) {
             QueryParser::Query q;
             Utils::ResultVector result;
             QueryParser* parser = this->_db->getParser();
-            QueryPlanner* planner = this->_db->getPlanner();            
+            QueryPlanner* planner = this->_db->getPlanner();
             for (int i = 0; i < req->query_size(); i++) {
                 parser->parse(req->query(i), q);
                 result = planner->execute(q);

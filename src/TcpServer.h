@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <atomic>
 #include <memory>
+#include "SimpleTimer.h"
 
 class TcpServer : public GenericServer {
 public:
