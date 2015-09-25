@@ -111,27 +111,31 @@ void TrisDb::benchmark() {
     for (int i = 0; i < 1000000; i++) {
         create("Key" + std::to_string(i), "Value" + std::to_string(i), Utils::toString(i));
         if (i % 100000 == 0) {
-            std::cout << std::to_string(i) << std::endl;
+            std::cout << std::to_string(i) << "\r";
+	    std::cout.flush();
         }
     }
+    std::cout << std::endl;
     double now_2 = TimeUtils::getCurrentTimestamp();
-    double tempo = now_2 - now_1;
-    double speed = 1000000.0 / (tempo / 1000.0);
+    int tempo = now_2 - now_1;
+    int speed = 1000000.0 / (tempo / 1000.0);
     LogManager::getSingleton()->log(LogManager::LINFO, "Writing 1,000,000 triples took " + std::to_string(tempo) + "ms");
-    LogManager::getSingleton()->log(LogManager::LINFO, "Write Speed: " + std::to_string(speed) + "/s");
+    LogManager::getSingleton()->log(LogManager::LINFO, "Write Speed: " + std::to_string(speed) + " triples/sec");
 
     double now_3 = TimeUtils::getCurrentTimestamp();
     for (int i = 0; i < 1000000; i++) {
         Utils::ResultVector res = getFromA("Key" + std::to_string(i));
         if (i % 100000 == 0) {
-            std::cout << std::to_string(i) << std::endl;
+            std::cout << std::to_string(i) << "\r";
+	    std::cout.flush();
         }
     }
+    std::cout << std::endl;
     double now_4 = TimeUtils::getCurrentTimestamp();
-    double tempo_2 = now_4 - now_3;
-    double speed_2 = 1000000.0 / (tempo_2 / 1000.0);
+    int tempo_2 = now_4 - now_3;
+    int speed_2 = 1000000.0 / (tempo_2 / 1000.0);
     LogManager::getSingleton()->log(LogManager::LINFO, "Reading 1,000,000 triples took " + std::to_string(tempo_2) + "ms");
-    LogManager::getSingleton()->log(LogManager::LINFO, "Read Speed: " + std::to_string(speed_2) + "/s");
+    LogManager::getSingleton()->log(LogManager::LINFO, "Read Speed: " + std::to_string(speed_2) + " triples/sec");
 }
 
 QueryParser* TrisDb::getParser() {
