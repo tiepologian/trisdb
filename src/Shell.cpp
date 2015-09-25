@@ -89,8 +89,8 @@ void Shell::run() {
 #endif
     // if exited loop, shutdown
     quit();
-    exit(0);
     delete client;
+    exit(0);
 }
 
 void Shell::quit() {

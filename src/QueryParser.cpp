@@ -32,20 +32,32 @@ void QueryParser::parse(std::string s, Query& q) {
 
     std::vector<std::string>params;
 
-    Tokenizer tok(s.substr(pos + 1), "\"");
-    while (tok.NextToken()) {
-        if (tok.GetToken() != " ") {
-            if(tok.GetToken() == "*") params.push_back(Utils::kQueryWildcard);
-            else params.push_back(tok.GetToken());
+    // run this only if there are characters after the command
+    if((pos > 0) && (pos <= s.length())) {
+        Tokenizer tok(s.substr(pos + 1), "\"");
+        while (tok.NextToken()) {
+            if (tok.GetToken() != " ") {
+                if(tok.GetToken() == "*") params.push_back(Utils::kQueryWildcard);
+                else params.push_back(tok.GetToken());
+            }
         }
     }
 
     // are there enough argsuments..?
-    if (params.size() < 3) {
+    if(params.size() == 0) {
+	if(q.command == "CREATE") throw ex;
+	else q.parameters = std::make_tuple(Utils::kQueryWildcard, Utils::kQueryWildcard, Utils::kQueryWildcard);
+	return;
+    } else if (params.size() < 2) {
+	// only first argument, assume wildcard for second and third
         if(q.command == "CREATE") throw ex;
-        // only first value in get, assume wildcards for other two
         else q.parameters = std::make_tuple(params.at(0), Utils::kQueryWildcard, Utils::kQueryWildcard);
         return;
+    } else if(params.size() < 3) {
+	// only first two arguments, assume wildcard for third
+	if(q.command == "CREATE") throw ex;
+	else q.parameters = std::make_tuple(params.at(0), params.at(1), Utils::kQueryWildcard);
+	return;
     }
 
     q.parameters = std::make_tuple(params.at(0), params.at(1), params.at(2));
