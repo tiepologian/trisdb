@@ -15,7 +15,7 @@ static char** my_completion(const char*, int ,int);
 char* my_generator(const char*,int);
 char * dupstr (char*);
 void *xmalloc (int);
-char* cmd [] ={ "CREATE", "GET", "DELETE", "CLEAR", "STATUS", "COUNT", "QUIT"};
+char* cmd [] ={ "CREATE", "GET", "DELETE", "CLEAR", "STATUS", "COUNT", "SAVE", "QUIT"};
 
 Shell::Shell(std::string port, std::string socket) {
     if(socket != "nosocket") {
@@ -42,7 +42,6 @@ void Shell::run() {
     else client = new TcpClient(this->_port);
     LogManager::getSingleton()->log(LogManager::LINFO, "Shell ready");
     std::cout << std::endl;
-#ifdef __linux__
     char *buf;
     rl_attempted_completion_function = my_completion;
     while ((buf = readline(">> ")) != NULL) {
@@ -68,25 +67,6 @@ void Shell::run() {
             add_history(buf);
     }
     free(buf);
-#else
-    while (true) {
-        std::cout << "> ";
-        std::string input;
-        std::getline(std::cin, input);
-        try {
-            if (input != "") {
-                if (boost::to_upper_copy(input) == "QUIT") break;
-                RequestPointer req(new QueryRequest);
-                req->add_query(input);
-                req->set_timestamp(std::to_string(TimeUtils::getCurrentTimestamp()));
-                printQueryResult(client->connect(req), boost::to_upper_copy(input.substr(0, input.find(" "))));
-                req.reset();
-            }
-        } catch (Utils::CustomException& e) {
-            LogManager::getSingleton()->log(LogManager::LERROR, e.what());
-        }
-    }
-#endif
     // if exited loop, shutdown
     quit();
     delete client;

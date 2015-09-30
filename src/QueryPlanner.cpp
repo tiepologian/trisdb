@@ -52,7 +52,9 @@ Utils::ResultVector QueryPlanner::execute(QueryParser::Query q) {
         result = this->_parent->count();
     } else if(q.command == "STATUS") {
         result = this->_parent->status();
-    } 
+    } else if(q.command == "SAVE") {
+	this->_parent->save();
+    }
     return result;
 }
 

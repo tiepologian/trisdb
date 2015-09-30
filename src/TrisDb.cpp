@@ -105,6 +105,11 @@ void TrisDb::clearAll() {
     dbData.clearAll();
 }
 
+void TrisDb::save() {
+    boost::lock_guard<boost::shared_mutex> lock(_mutex);
+    StorageEngine::getSingleton()->syncSave(&this->dbData, this->_config->getSetting("dbfolder"));
+}
+
 void TrisDb::benchmark() {
     LogManager::getSingleton()->log(LogManager::LINFO, "Starting benchmark");
     double now_1 = TimeUtils::getCurrentTimestamp();

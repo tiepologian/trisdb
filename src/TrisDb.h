@@ -36,6 +36,7 @@ public:
     Utils::ResultVector count();
     Utils::ResultVector status();
     void clearAll();
+    void save();
     QueryParser* getParser();
     QueryPlanner* getPlanner();
     static void stop(int param);
