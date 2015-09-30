@@ -2,7 +2,7 @@ Source: trisdb
 Section: database
 Priority: optional
 Maintainer: Gianluca Tiepolo <tiepolo.gian@gmail.com>
-Build-Depends: cmake, build-essential, libboost-all-dev, libreadline6-dev, libprotobuf-dev, libsnappy-dev
+Build-Depends: cmake, build-essential, libboost-all-dev, libreadline6-dev, libprotobuf-dev, libsnappy-dev, g++-4.9
 Homepage: https://github.com/tiepologian/trisdb
 
 Package: trisdb
