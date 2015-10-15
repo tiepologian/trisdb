@@ -66,6 +66,7 @@ private:
     void handle_read_body(const boost::system::error_code& error);
     boost::asio::local::stream_protocol::socket socket_;    
     std::vector<uint8_t> m_readbuf;
+    std::vector<google::protobuf::uint8> m_writebuf;
     PackedMessage<QueryRequest> m_packed_request;
 };
 
