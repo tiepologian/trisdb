@@ -37,7 +37,7 @@ QueryResponse TcpClient::connect(RequestPointer resp) {
         boost::asio::write(*_s, boost::asio::buffer(writebuf));
 
         boost::system::error_code error;
-        std::vector<uint8_t> m_readbuf;
+        std::vector<google::protobuf::uint8> m_readbuf;
         ResponsePointer resp2 = boost::make_shared<QueryResponse>();
         PackedMessage<QueryResponse> res_msg(resp2);
 
@@ -50,7 +50,10 @@ QueryResponse TcpClient::connect(RequestPointer resp) {
         if (res_msg.unpack(m_readbuf)) {
             ResponsePointer res = res_msg.get_msg();
             return *res;
-        }
+        } else {
+	    std::cout << "ERROR UNPACKING RESPONSE IN TCP CLIENT" << std::endl;
+	    std::exit(1);
+	}
     } catch (std::exception& e) {
         std::cout << e.what() << std::endl;
     }

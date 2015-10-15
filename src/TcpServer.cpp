@@ -127,15 +127,16 @@ void AsyncTcpSession::handle_read_body(const boost::system::error_code& error) {
                 rec->set_predicate(std::get<1>(*it));
                 rec->set_object(std::get<2>(*it));
             }
-            std::vector<google::protobuf::uint8> writebuf;
             PackedMessage<QueryResponse> resp_msg(resp);
-            resp_msg.pack(writebuf);
+            resp_msg.pack(m_writebuf);
             auto self(shared_from_this());
-            boost::asio::async_write(socket_, boost::asio::buffer(writebuf),
+            boost::asio::async_write(socket_, boost::asio::buffer(m_writebuf),
                     [this, self](boost::system::error_code ec, std::size_t length) {
                         if (!ec) {
                             do_read();
-                        }
+                        } else {
+			    LogManager::getSingleton()->log(LogManager::LERROR, "Error writing data to socket: " + ec.message());
+			}
                     }
             );
         }

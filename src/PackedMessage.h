@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   PackedMessage.h
  * Author: tiepologian <tiepolo.gian@gmail.com>
  *
@@ -15,10 +15,10 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/cstdint.hpp>
 
-typedef std::vector<boost::uint8_t> data_buffer;
+typedef std::vector<google::protobuf::uint8> data_buffer;
 
 
-// A generic function to show contents of a container holding byte data 
+// A generic function to show contents of a container holding byte data
 // as a string with hex representation for each byte.
 //
 
@@ -78,7 +78,7 @@ public:
     }
 
     // Given a buffer with the first HEADER_SIZE bytes representing the header,
-    // decode the header and return the message length. Return 0 in case of 
+    // decode the header and return the message length. Return 0 in case of
     // an error.
     //
 

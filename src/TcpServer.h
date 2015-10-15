@@ -64,8 +64,9 @@ private:
     void parseMessage(unsigned size);
     void handle_read_header(const boost::system::error_code& error);
     void handle_read_body(const boost::system::error_code& error);
-    boost::asio::ip::tcp::socket socket_;    
+    boost::asio::ip::tcp::socket socket_;
     std::vector<uint8_t> m_readbuf;
+    std::vector<google::protobuf::uint8> m_writebuf;
     PackedMessage<QueryRequest> m_packed_request;
 };
 

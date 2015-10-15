@@ -93,7 +93,8 @@ void Shell::printQueryResult(QueryResponse res, std::string cmd) {
         tp.AddColumn("Value", 20);
     }
     if ((cmd.substr(0, 2) == "GE") || (cmd == "COUNT") || (cmd == "STATUS")) tp.PrintHeader();
-    for (int i = 0; i < res.data_size(); i++) {
+    int printRowLimit = 100;
+    for (int i = 0; ((i < res.data_size()) && (i < printRowLimit)); i++) {
         if (cmd == "GETS") tp << res.data(i).subject();
         else if (cmd == "GETP") tp << res.data(i).predicate();
         else if (cmd == "GETO") tp << res.data(i).object();
@@ -107,6 +108,7 @@ void Shell::printQueryResult(QueryResponse res, std::string cmd) {
     if (queryTime == 0) queryTime = 1;
     if (cmd.substr(0, 2) == "GE") std::cout << "\nRead " << res.data_size() << " rows in " << queryTime << "ms" << std::endl << std::endl;
     else std::cout << "Query executed in " << queryTime << "ms" << std::endl << std::endl;
+    if (res.data_size() > printRowLimit) std::cout << "Displaying rows 1-100, more available" << std::endl;
 }
 
 static char** my_completion( const char * text , int start,  int end) {
