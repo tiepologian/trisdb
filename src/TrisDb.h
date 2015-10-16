@@ -48,6 +48,7 @@ private:
     Config* _config;
     std::vector<GenericServer*> _servers;
     static volatile sig_atomic_t _terminateLoop;
+    static bool _dataChanged;
     boost::shared_mutex _mutex;
 };
 

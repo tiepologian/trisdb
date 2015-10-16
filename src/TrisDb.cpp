@@ -9,6 +9,7 @@
 #include "LogManager.h"
 
 volatile sig_atomic_t TrisDb::_terminateLoop = 0;
+bool TrisDb::_dataChanged = false;
 
 TrisDb::TrisDb(Config* config) {
     signal(SIGTERM, stop);
@@ -39,11 +40,13 @@ void TrisDb::addServer(GenericServer* g) {
 
 void TrisDb::create(std::string a, std::string b, std::string c) {
     boost::lock_guard<boost::shared_mutex> lock(_mutex);
+    TrisDb::_dataChanged = true;
     dbData.add(a, b, c);
 }
 
 bool TrisDb::remove(std::string a, std::string b, std::string c) {
     boost::lock_guard<boost::shared_mutex> lock(_mutex);
+    TrisDb::_dataChanged = true;
     return dbData.remove(a, b, c);
 }
 
@@ -102,12 +105,14 @@ Utils::ResultVector TrisDb::status() {
 
 void TrisDb::clearAll() {
     boost::lock_guard<boost::shared_mutex> lock(_mutex);
+    TrisDb::_dataChanged = true;
     dbData.clearAll();
 }
 
 void TrisDb::save() {
     boost::lock_guard<boost::shared_mutex> lock(_mutex);
     StorageEngine::getSingleton()->syncSave(&this->dbData, this->_config->getSetting("dbfolder"));
+    TrisDb::_dataChanged = false;
 }
 
 void TrisDb::benchmark() {
@@ -175,7 +180,11 @@ void TrisDb::run() {
     }
     // give the IO threads time to terminate
     sleep(1);
-    StorageEngine::getSingleton()->syncSave(&this->dbData, this->_config->getSetting("dbfolder"));
+    if(TrisDb::_dataChanged) {
+        StorageEngine::getSingleton()->syncSave(&this->dbData, this->_config->getSetting("dbfolder"));
+    } else {
+	LogManager::getSingleton()->log(LogManager::LINFO, "No changes to dataset");
+    }
 }
 
 void TrisDb::stop(int param) {
