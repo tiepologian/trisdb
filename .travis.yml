@@ -8,11 +8,11 @@ compiler:
 before_script:
   - sudo apt-get install cmake libreadline6-dev libprotobuf-dev libsnappy-dev
   
-  # TrisDB requires GCC > 4.7
+  # TrisDB requires GCC >= 4.9
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -qq
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.9; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.8"; fi
 
   # TrisDB requires Boost >= 1.48
   - sudo apt-add-repository ppa:boost-latest/ppa -y
