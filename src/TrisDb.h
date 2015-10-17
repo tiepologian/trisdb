@@ -32,7 +32,7 @@ public:
     Utils::ResultVector getFromB(std::string b);
     Utils::ResultVector getFromC(std::string c);
     Utils::ResultVector get(int index, std::string c);
-    Utils::ResultVector getAll();
+    Utils::ResultVector getAll(int limit);
     Utils::ResultVector count();
     Utils::ResultVector status();
     void clearAll();

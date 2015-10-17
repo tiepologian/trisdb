@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   QueryParser.cpp
  * Author: tiepologian <tiepolo.gian@gmail.com>
- * 
+ *
  * Created on 20 maggio 2014, 17.26
  */
 
@@ -21,6 +21,8 @@ QueryParser::~QueryParser() {
 
 void QueryParser::parse(std::string s, Query& q) {
     q.timestamp = TimeUtils::getCurrentTimestamp();
+    findLimit(s, q);
+
     unsigned pos = s.find(" ");
     q.command = boost::to_upper_copy(s.substr(0, pos));
 
@@ -34,12 +36,15 @@ void QueryParser::parse(std::string s, Query& q) {
 
     // run this only if there are characters after the command
     if((pos > 0) && (pos <= s.length())) {
-        Tokenizer tok(s.substr(pos + 1), "\"");
-        while (tok.NextToken()) {
-            if (tok.GetToken() != " ") {
-                if(tok.GetToken() == "*") params.push_back(Utils::kQueryWildcard);
-                else params.push_back(tok.GetToken());
-            }
+        std::regex words_regex("\"([^\"]*)\"");
+        auto words_begin = std::sregex_iterator(s.begin(), s.end(), words_regex);
+        auto words_end = std::sregex_iterator();
+
+        for (auto i=words_begin;i != words_end;++i) {
+            std::string match = (*i).str();
+	    match = match.substr(1, match.length()-2);
+	    if(match == "*") params.push_back(Utils::kQueryWildcard);
+            else params.push_back(match);
         }
     }
 
@@ -62,6 +67,18 @@ void QueryParser::parse(std::string s, Query& q) {
 
     q.parameters = std::make_tuple(params.at(0), params.at(1), params.at(2));
     return;
+}
+
+void QueryParser::findLimit(std::string& s, Query& q) {
+    std::size_t found = ((s.rfind("LIMIT") != std::string::npos) ? s.rfind("LIMIT") : s.rfind("limit"));
+    if(found != std::string::npos) {
+	std::string substring = s.substr(found);
+	std::size_t foundSpace = substring.find(" ");
+	std::size_t foundEnd = substring.find(" ", foundSpace+1);
+        std::string limitString = substring.substr(foundSpace+1, foundEnd-(foundSpace+1));
+	q.limit = atoi(limitString.c_str());
+	s.erase(found, foundEnd);
+    }
 }
 
 std::ostream& operator <<(std::ostream &o, const QueryParser::Query &a) {

@@ -76,9 +76,19 @@ Utils::ResultVector TrisDb::get(int index, std::string c) {
     }
 }
 
-Utils::ResultVector TrisDb::getAll() {
+Utils::ResultVector TrisDb::getAll(int limit) {
     boost::shared_lock<boost::shared_mutex> lock(_mutex);
-    return dbData.getAll();
+    Utils::ResultVector res = dbData.getAll();
+    if(limit == Utils::kQueryLimitWildcard) {
+	return res;
+    } else {
+	if(res.size() <= limit) {
+	    return res;
+	} else {
+	    res.resize(limit);
+	    return res;
+	}
+    }
 }
 
 Utils::ResultVector TrisDb::count() {

@@ -24,6 +24,7 @@
 #include <sstream>
 #include <exception>
 #include <unordered_set>
+#include <regex>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -50,6 +51,7 @@ namespace Utils {
     typedef std::tuple<std::string, std::string, std::string> record;
     typedef std::vector<record> ResultVector;
     static const std::string kQueryWildcard = "***";
+    static const int kQueryLimitWildcard = 0;
 
     static const std::unordered_set<std::string> ValidCommands{"CREATE", "GET", "GETS", "GETP", "GETO", "DELETE", "CLEAR", "COUNT", "STATUS", "QUIT", "SAVE"};
 

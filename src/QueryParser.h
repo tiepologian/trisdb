@@ -10,7 +10,6 @@
 
 #include "Utils.h"
 #include "TimeUtils.h"
-#include "Tokenizer.h"
 
 class QueryParser {
 public:
@@ -21,13 +20,14 @@ public:
         double timestamp;
         std::string command;
         Utils::record parameters;
+	int limit = Utils::kQueryLimitWildcard;
     };
     // Receives string command, parses it and returns Query object
     void parse(std::string s, Query& q);
     //std::ostream& operator << (std::ostream &o, const Query &a);
     friend std::ostream& operator << (std::ostream &o, const Query &a);
 private:
-
+    void findLimit(std::string& s, Query& q);
 };
 
 #endif	/* QUERYPARSER_H */
