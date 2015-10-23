@@ -28,7 +28,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
-#define TRISDB_VERSION "1.0.0"
+#define TRISDB_VERSION "1.1.0"
 
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)

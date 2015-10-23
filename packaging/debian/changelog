@@ -1,6 +1,6 @@
-trisdb (1.0.1) trusty; urgency=low
+trisdb (1.1.0) trusty; urgency=low
 
   * View changelog at https://github.com/tiepologian/trisdb/releases
 
- -- Gianluca Tiepolo <tiepolo.gian@gmail.com>  Wed, 30 Sep 2015 18:16:51 +0000
+ -- Gianluca Tiepolo <tiepolo.gian@gmail.com>  Fri, 23 Oct 2015 11:06:51 +0000
 
